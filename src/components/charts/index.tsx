@@ -14,8 +14,8 @@ interface BarChartProps {
 
 export const BarChart: FC<BarChartProps> = ({
   chartData,
-  width = 'auto',
-  height = 500,
+  width = 400 * 2,
+  height = 400,
   graphTitle = '',
   xAxisTitle = '',
   yAxisTitle = '',
@@ -31,7 +31,7 @@ export const BarChart: FC<BarChartProps> = ({
           ...chartData,
           datasets: chartData.datasets.map((dataset: any) => ({
             ...dataset,
-            backgroundColor: 'rgba(0, 0, 255, 0.2)',
+            backgroundColor: 'rgba(0, 0, 255, 0.4)',
           })),
         },
         options: {
@@ -70,6 +70,10 @@ export const BarChart: FC<BarChartProps> = ({
         },
       })
 
+      // set chart width and height
+      myChart.setWidth(width)
+      myChart.setHeight(height)
+
       const url = await myChart.toDataUrl()
       setChartImageUrl(url)
     }
@@ -77,9 +81,5 @@ export const BarChart: FC<BarChartProps> = ({
     generateChart()
   }, [chartData, width, height, graphTitle, xAxisTitle, yAxisTitle])
 
-  return (
-    <div>
-      {chartImageUrl && <Image src={chartImageUrl} style={{ width, height }} />}
-    </div>
-  )
+  return <div>{chartImageUrl && <Image src={chartImageUrl} />}</div>
 }

@@ -74,72 +74,30 @@ const Header: React.FC = () => {
 }
 
 const Nema: React.FC<NemaProps> = ({ data }) => {
-  const chartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: [10, 20, 30, 40, 50, 60, 70],
-        borderColor: 'red',
-        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-      },
-      {
-        label: 'Dataset 2',
-        data: [70, 60, 50, 40, 30, 20, 10],
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-      },
-    ],
-  }
+  // const chartData = {
+  //   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  //   datasets: [
+  //     {
+  //       label: 'Dataset 1',
+  //       data: [10, 20, 30, 40, 50, 60, 70],
+  //       borderColor: 'red',
+  //       backgroundColor: 'rgba(255, 0, 0, 0.2)',
+  //     },
+  //     {
+  //       label: 'Dataset 2',
+  //       data: [70, 60, 50, 40, 30, 20, 10],
+  //       borderColor: 'blue',
+  //       backgroundColor: 'rgba(0, 0, 255, 0.2)',
+  //     },
+  //   ],
+  // }
   return (
     <Document>
-      {/* page 1 */}
-      <Page size="A4" style={styles.page}>
-        <Header />
-        <View style={styles.section}>
-          <Text style={styles.heading}>
-            Air Quality Report for February 2024
-          </Text>
-          <Text style={styles.text}>
-            This report presents an analysis of the PM2.5 concentrations in
-            various locations for the month of February 2024. PM2.5 refers to
-            particulate matter with a diameter of 2.5 micrometers or smaller,
-            which can pose health risks when present in high concentrations. The
-            data was collected from monitoring stations from AirQo and U.S.
-            Department Of State across the continent, providing insights into
-            air quality and potential health implications. The countries
-            included in the analysis are Ivory Coast, Algeria, South Africa,
-            Ethiopia, Madagascar, Mozambique, Ghana, Rwanda, Cameroon, Kenya,
-            Uganda, Burundi, Burkina Faso, Nigeria, Egypt, and Chad.
-          </Text>
-          <Text style={styles.subHeading}>Uganda</Text>
-          <Text style={styles.text}>
-            In February 2024, Uganda experienced a slight rise in average PM2.5
-            concentration from 38.85 µg/m³ in January to 39.64 µg/m³ in February
-            indicating a decline in air quality. This increase is attributed to
-            the seasonal transition to a dry period, leading to elevated dust
-            and particulate matter. Anticipated slight decrease in PM2.5 levels
-            are expected in March 2024.
-          </Text>
-          <Text style={styles.text}>
-            The highest mean PM2.5 levels were recorded at specific locations,
-            with Nansana west ward in Wakiso district registering the highest at
-            76.02 µg/m³. Monitoring air quality and taking necessary measures to
-            mitigate the impact on public health are crucial in affected
-            regions.
-          </Text>
-          <Text style={styles.text}>
-            Notably, the locations registering the highest mean PM2.5 values in
-            February were as follows in table 1 and figure 1.
-          </Text>
-        </View>
-      </Page>
       {/* page 2 */}
       <Page size="A4" style={styles.page}>
         <Header />
         <View style={styles.section}>
           <View>
-            <BarChart chartData={chartData} />
             <Text
               style={{
                 ...styles.figureCaption,

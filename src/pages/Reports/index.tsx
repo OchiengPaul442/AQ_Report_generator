@@ -201,7 +201,7 @@ const Index = () => {
         </div>
 
         {loading ? (
-          <div className="flex h-full items-center justify-center">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <BounceLoader color="#d6a936" />
           </div>
         ) : showPDF ? (
