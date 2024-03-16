@@ -82,26 +82,39 @@ const Header: React.FC = () => {
   )
 }
 
-const chartData = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: [10, 20, 30, 40, 50, 60, 70],
-      borderColor: 'red',
-      backgroundColor: 'rgba(255, 0, 0, 0.2)',
-    },
-    {
-      label: 'Dataset 2',
-      data: [70, 60, 50, 40, 30, 20, 10],
-      borderColor: 'blue',
-      backgroundColor: 'rgba(0, 0, 255, 0.2)',
-    },
-  ],
-}
-
 const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
-  const ImagesLoaded = BarChart({ chartData })
+  const chartData1 = {
+    labels: data.airquality.site_monthly_mean_pm.map(
+      (site_name: any) => site_name.site_name,
+    ),
+    datasets: [
+      {
+        label: 'PM2.5 Raw Values',
+        data: data.airquality.site_monthly_mean_pm.map(
+          (item: { pm2_5_raw_value: number }) => item.pm2_5_raw_value,
+        ),
+      },
+    ],
+  }
+
+  const chartData2 = {
+    labels: data.airquality.daily_mean_pm.map((item: { date: string }) =>
+      new Date(item.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      }),
+    ),
+    datasets: [
+      {
+        label: 'Daily Mean PM2.5',
+        data: data.airquality.site_monthly_mean_pm.map(
+          (item: { pm2_5_raw_value: number }) => item.pm2_5_raw_value,
+        ),
+      },
+    ],
+  }
+
+  const ImagesLoaded = BarChart({ chartData: chartData1 })
 
   return (
     <Document
@@ -152,7 +165,12 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
           February were as follows in table 1 and figure 1.
         </Text>
         <View>
-          <BarChart chartData={chartData} />
+          <BarChart
+            chartData={chartData1}
+            graphTitle="PM2.5 Raw Values for Uganda"
+            xAxisTitle="Location"
+            yAxisTitle="PM2.5 Raw Values"
+          />
           <Text
             style={{
               ...styles.figureCaption,
@@ -179,6 +197,12 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
           than 20 µg/m³ values in February as shown in figure 2:
         </Text>
         <View>
+          <BarChart
+            chartData={chartData2}
+            graphTitle="Diurnal PM2.5 for Uganda"
+            xAxisTitle="Date"
+            yAxisTitle="PM2.5 Raw Values"
+          />
           <Text style={styles.figureCaption}>
             Figure 2: Figure showing the least mean PM2.5 in Uganda with PM2.5
             less than 20 µg/m³
