@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import Logo from '/images/LOGO.jpg'
 import { toggleDarkMode } from 'src/services/redux/DarkModeSlice'
 import { useDispatch, useSelector } from 'src/services/redux/utils'
 import Files from '@public/icons/Files'
 import Reports from '@public/icons/Reports'
+import Settings from '@public/icons/Settings'
 
 interface SidebarItemProps {
   icon: React.ReactNode
@@ -18,15 +19,19 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   LinkText,
   linkPath,
 }) => (
-  <Link
+  <NavLink
     to={linkPath}
-    className="flex items-center space-x-2 w-full p-2 hover:bg-gray-800 
-    rounded transition-all duration-300"
+    className={({ isActive }) =>
+      `flex items-center space-x-2 w-full p-2 rounded transition-all duration-300 ${
+        isActive ? 'bg-gray-800' : ''
+      }`
+    }
   >
     {icon}
     <p>{LinkText}</p>
-  </Link>
+  </NavLink>
 )
+
 const Index: React.FC = () => {
   const currentYear = new Date().getFullYear()
   const darkMode = useSelector((state) => state.darkMode.darkMode)
@@ -49,7 +54,7 @@ const Index: React.FC = () => {
       <div className="w-64 h-full bg-[#810000] text-white shadow-lg flex flex-col justify-between">
         <div>
           <div className="p-4 flex justify-between items-center">
-            <Link
+            <NavLink
               to="/"
               className="block mb-2 flex space-x-2 items-center justify-start w-full"
             >
@@ -61,7 +66,7 @@ const Index: React.FC = () => {
               <p className="text-left w-full text-lg font-semibold">
                 AQ Report
               </p>
-            </Link>
+            </NavLink>
             <button
               onClick={handleToggleDarkMode}
               className="h-12 w-12 rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-500"
@@ -90,6 +95,11 @@ const Index: React.FC = () => {
           <div className="space-y-2 p-4">
             <SidebarItem icon={<Reports />} linkPath="/" LinkText="Reports" />
             <SidebarItem icon={<Files />} linkPath="/files" LinkText="Files" />
+            <SidebarItem
+              icon={<Settings />}
+              linkPath="/settings"
+              LinkText="Settings"
+            />
           </div>
         </div>
         {/* trademark and poweredby */}

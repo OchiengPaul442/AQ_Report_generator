@@ -4,6 +4,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from '@services/redux/store'
 import Reports from './pages/Reports'
 import Files from './pages/Files'
+import Settings from './pages/settings'
 import { Suspense } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -24,6 +25,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Reports />} />
               <Route path="/files" element={<Files />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
             <ToastContainer position="bottom-right" />
           </Suspense>

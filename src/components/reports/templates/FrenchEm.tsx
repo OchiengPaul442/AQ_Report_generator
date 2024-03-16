@@ -114,6 +114,18 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
     ],
   }
 
+  const chartData3 = {
+    labels: data.airquality.diurnal.map((item: { hour: number }) => item.hour),
+    datasets: [
+      {
+        label: 'Diurnal PM2.5',
+        data: data.airquality.diurnal.map(
+          (item: { pm2_5_raw_value: number }) => item.pm2_5_raw_value,
+        ),
+      },
+    ],
+  }
+
   const ImagesLoaded = BarChart({ chartData: chartData1 })
 
   return (
@@ -220,10 +232,18 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
           was an improvement from January levels where there was no location
           with values less than 20 µg/m³.
         </Text>
-        <Text style={styles.subTitle}>Diurnal</Text>
-        <Text style={styles.figureCaption}>
-          Figure 3: Diurnal PM2.5 for Uganda. (The time was in GMT)
-        </Text>
+        <View>
+          <Text style={styles.subTitle}>Diurnal</Text>
+          <BarChart
+            chartData={chartData3}
+            graphTitle="Diurnal PM2.5 for Uganda"
+            xAxisTitle="Hour"
+            yAxisTitle="PM2.5 Raw Values"
+          />
+          <Text style={styles.figureCaption}>
+            Figure 3: Diurnal PM2.5 for Uganda. (The time was in GMT)
+          </Text>
+        </View>
         <Text style={styles.text}>
           The hourly variation of PM2.5 concentrations, revealing insights into
           air quality patterns. The highest PM2.5 value occurs at 21:00 (9:00

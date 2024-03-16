@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 import AirQoPdfDocument from './templates/AirQo'
 import FrenchEmPdfDocument from './templates/FrenchEm'
 import BackArrow from '@public/icons/BackArrow'
+import { BarLoader } from 'react-spinners'
 
 interface IndexProps {
   MockData: any
@@ -132,7 +133,14 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
         >
           {({ url, loading, error }) => {
             if (loading) {
-              return 'Loading document...'
+              return (
+                <div className="flex flex-col justify-center items-center mt-8">
+                  <BarLoader color="#d6a936" />
+                  <p className="mt-2 text-lg text-gray-600">
+                    Generating your report, please wait...
+                  </p>
+                </div>
+              )
             }
             if (error) {
               return 'Error generating PDF'
@@ -142,7 +150,7 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
                 src={url as string}
                 style={{
                   width: '100%',
-                  height: '600px',
+                  height: '650px',
                 }}
               />
             )

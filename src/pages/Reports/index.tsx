@@ -6,7 +6,7 @@ import Select from 'react-select'
 import { fetchGridDataAsync } from 'src/services/redux/GrideSlice'
 import { useDispatch, useSelector } from 'src/services/redux/utils'
 // import { getReportData } from 'src/services/apis/apis'
-import BounceLoader from 'react-spinners/BounceLoader'
+import BarLoader from 'react-spinners/BarLoader'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import ReportGenerator from 'src/components/reports'
@@ -201,8 +201,11 @@ const Index = () => {
         </div>
 
         {loading ? (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <BounceLoader color="#d6a936" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <BarLoader color="#d6a936" />
+            <p className="mt-2 text-lg text-gray-600">
+              Preparing your report...
+            </p>
           </div>
         ) : showPDF ? (
           <ReportGenerator
