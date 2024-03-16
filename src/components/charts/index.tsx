@@ -81,5 +81,5 @@ export const BarChart: FC<BarChartProps> = ({
     generateChart()
   }, [chartData, width, height, graphTitle, xAxisTitle, yAxisTitle])
 
-  return <div>{chartImageUrl && <Image src={chartImageUrl} />}</div>
+  return chartImageUrl && <Image src={chartImageUrl} />
 }

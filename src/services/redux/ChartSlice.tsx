@@ -5,7 +5,7 @@ interface ChartState {
 }
 
 const initialState: ChartState = {
-  isLoading: false,
+  isLoading: true,
 }
 
 const chartSlice = createSlice({

@@ -82,26 +82,40 @@ const Header: React.FC = () => {
   )
 }
 
+const chartData = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: [10, 20, 30, 40, 50, 60, 70],
+      borderColor: 'red',
+      backgroundColor: 'rgba(255, 0, 0, 0.2)',
+    },
+    {
+      label: 'Dataset 2',
+      data: [70, 60, 50, 40, 30, 20, 10],
+      borderColor: 'blue',
+      backgroundColor: 'rgba(0, 0, 255, 0.2)',
+    },
+  ],
+}
+
 const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
-  const chartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: [10, 20, 30, 40, 50, 60, 70],
-        borderColor: 'red',
-        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-      },
-      {
-        label: 'Dataset 2',
-        data: [70, 60, 50, 40, 30, 20, 10],
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-      },
-    ],
-  }
+  const ImagesLoaded = BarChart({ chartData })
+
   return (
-    <Document>
+    <Document
+      title="Air Quality Report"
+      author="AirQo"
+      subject="Air Quality"
+      language="en"
+      pdfVersion="1.5"
+      onRender={() => {
+        if (!ImagesLoaded && !data) {
+          return null
+        }
+      }}
+    >
       {/* page 1 */}
       <Page size="A4" style={styles.page}>
         <Header />

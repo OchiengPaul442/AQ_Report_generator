@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 // import { useSelector } from 'src/services/redux/utils'
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 import { toast } from 'react-toastify'
 // templates
 import AirQoPdfDocument from './templates/AirQo'
@@ -20,7 +20,6 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
   const [displayPDF, setDisplayPDF] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState('French_Embassy')
   const [showOptions, setShowOptions] = useState(true)
-  // const chartIsLoading = useSelector((state) => state.chart.isLoading)
 
   const generatePDFReport = () => {
     if (reportTitle.trim() === '') {
@@ -44,6 +43,7 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
         return <AirQoPdfDocument data={MockData} />
     }
   }
+
   return (
     <>
       {/* return buttons */}
@@ -126,9 +126,28 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
       )}
 
       {displayPDF && (
-        <PDFViewer width="100%" height="600px">
-          {getTemplate()}
-        </PDFViewer>
+        <PDFDownloadLink
+          document={getTemplate()}
+          fileName={`${reportTitle} Report.pdf`}
+        >
+          {({ url, loading, error }) => {
+            if (loading) {
+              return 'Loading document...'
+            }
+            if (error) {
+              return 'Error generating PDF'
+            }
+            return (
+              <iframe
+                src={url as string}
+                style={{
+                  width: '100%',
+                  height: '600px',
+                }}
+              />
+            )
+          }}
+        </PDFDownloadLink>
       )}
     </>
   )
