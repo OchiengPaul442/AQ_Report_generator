@@ -117,7 +117,7 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
           </div>
 
           <button
-            className="bg-green-700 text-white rounded-lg p-2"
+            className="bg-[#800000] text-white font-bold py-2 px-4 rounded hover:bg-[#a30000] transition-all duration-300"
             onClick={generatePDFReport}
             disabled={loading}
           >
@@ -143,7 +143,13 @@ const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
               )
             }
             if (error) {
-              return 'Error generating PDF'
+              return (
+                <div className="flex flex-col justify-center items-center mt-8">
+                  <p className="mt-2 text-lg text-red-600">
+                    Error generating report. Please try again
+                  </p>
+                </div>
+              )
             }
             return (
               <iframe

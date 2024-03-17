@@ -111,6 +111,12 @@ const Nema: React.FC<NemaProps> = ({ data }) => {
         <Header />
         <View style={styles.section}>
           <View>
+            <BarChart
+              chartData={chartData}
+              graphTitle="Graph Title"
+              xAxisTitle="X Axis Title"
+              yAxisTitle="Y Axis Title"
+            />
             <Text
               style={{
                 ...styles.figureCaption,

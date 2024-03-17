@@ -94,7 +94,11 @@ const Index: React.FC = () => {
           <hr />
           <div className="space-y-2 p-4">
             <SidebarItem icon={<Reports />} linkPath="/" LinkText="Reports" />
-            <SidebarItem icon={<Files />} linkPath="/files" LinkText="Files" />
+            <SidebarItem
+              icon={<Files />}
+              linkPath="/files"
+              LinkText="Saved Files"
+            />
             <SidebarItem
               icon={<Settings />}
               linkPath="/settings"
