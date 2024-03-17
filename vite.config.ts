@@ -20,14 +20,21 @@ export default defineConfig({
   define: {
     global: 'window',
   },
-  // ...
   optimizeDeps: {
     include: ['@react-pdf/renderer'],
     esbuildOptions: {
-      // Node.js global to browser globalThis
       define: { global: 'globalThis' },
       // Enable esbuild polyfill plugins
       plugins: [NodeGlobalsPolyfillPlugin({ buffer: true })],
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5173',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
     },
   },
 })
