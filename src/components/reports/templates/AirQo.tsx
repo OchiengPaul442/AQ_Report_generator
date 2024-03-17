@@ -92,7 +92,8 @@ const chartData = {
 }
 
 const Nema: React.FC<NemaProps> = ({ data }) => {
-  const ImagesLoaded = BarChart({ chartData })
+  if (!data) return null
+
   return (
     <Document
       title="Air Quality Report"
@@ -100,11 +101,6 @@ const Nema: React.FC<NemaProps> = ({ data }) => {
       subject="Air Quality"
       language="en"
       pdfVersion="1.5"
-      onRender={() => {
-        if (!ImagesLoaded && !data) {
-          return
-        }
-      }}
     >
       {/* page 2 */}
       <Page size="A4" style={styles.page}>

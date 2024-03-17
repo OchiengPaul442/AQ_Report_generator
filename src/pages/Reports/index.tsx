@@ -11,6 +11,8 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import ReportGenerator from 'src/components/reports'
 import MockData from 'src/services/data/data.json'
+import { Button as ButtonComp } from 'src/components/buttons'
+import DownloadIcon from '@public/icons/DownloadIcon'
 
 const Index = () => {
   const dispatch = useDispatch()
@@ -215,12 +217,12 @@ const Index = () => {
           />
         ) : (
           <div className="flex h-48 items-center justify-center border-2 border-dotted border-yellow-500 rounded-lg">
-            <button
-              className="bg-[#800000] hover:bg-[#a30000] transition-all duration-300 text-white font-bold py-2 px-4 rounded"
+            <ButtonComp
+              backgroundColor="#800000"
+              text="Fetch Report Data"
               onClick={generateReport}
-            >
-              Fetch Report Data
-            </button>
+              icon={<DownloadIcon width={20} height={20} />}
+            />
           </div>
         )}
       </div>

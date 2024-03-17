@@ -15,14 +15,12 @@ const Reports: React.FC<ReportsProps> = ({ width = 24, height = 24 }) => {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="icon icon-tabler icons-tabler-outline icon-tabler-file-analytics"
+      className="icon icon-tabler icons-tabler-outline icon-tabler-server-cog"
     >
-      <path d="M0 0h24v24H0z" stroke="none" />
-      <path d="M14 3v4a1 1 0 001 1h4" />
-      <path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2zM9 17v-5M12 17v-1M15 17v-3" />
+      <path d="M14 2.27V6.4c0 .56 0 .84.109 1.054a1 1 0 00.437.437c.214.11.494.11 1.054.11h4.13M8 15v3m8-5v5m-4-7.5V18m8-8.012V17.2c0 1.68 0 2.52-.327 3.162a3 3 0 01-1.311 1.311C17.72 22 16.88 22 15.2 22H8.8c-1.68 0-2.52 0-3.162-.327a3 3 0 01-1.311-1.311C4 19.72 4 18.88 4 17.2V6.8c0-1.68 0-2.52.327-3.162a3 3 0 011.311-1.311C6.28 2 7.12 2 8.8 2h3.212c.733 0 1.1 0 1.446.083.306.073.598.195.867.36.303.185.562.444 1.08.963l3.19 3.188c.518.519.777.778.963 1.081a3 3 0 01.36.867c.082.346.082.712.082 1.446z" />
     </svg>
   )
 }

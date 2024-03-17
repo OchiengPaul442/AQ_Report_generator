@@ -83,6 +83,8 @@ const Header: React.FC = () => {
 }
 
 const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
+  if (!data) return null
+
   const chartData1 = {
     labels: data.airquality.site_monthly_mean_pm.map(
       (site_name: any) => site_name.site_name,
@@ -126,8 +128,6 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
     ],
   }
 
-  const ImagesLoaded = BarChart({ chartData: chartData1 })
-
   return (
     <Document
       title="Air Quality Report"
@@ -135,11 +135,6 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
       subject="Air Quality"
       language="en"
       pdfVersion="1.5"
-      onRender={() => {
-        if (!ImagesLoaded && !data) {
-          return null
-        }
-      }}
     >
       {/* page 1 */}
       <Page size="A4" style={styles.page}>

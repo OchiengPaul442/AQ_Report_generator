@@ -9,9 +9,6 @@ const apiCall = async (url: string, method: string, data?: any) => {
     method,
     url: `${url}?token=${ACCESS_TOKEN}`,
     data,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   })
   return response.data
 }
