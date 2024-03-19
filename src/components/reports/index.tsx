@@ -1,179 +1,229 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react'
-// import { useSelector } from 'src/services/redux/utils'
-import { PDFDownloadLink } from '@react-pdf/renderer'
-import { toast } from 'react-toastify'
-// templates
-import AirQoPdfDocument from './templates/AirQo'
-import FrenchEmPdfDocument from './templates/FrenchEm'
-import BackArrow from '@public/icons/BackArrow'
-import { BarLoader } from 'react-spinners'
-import SaveIcon from '@public/icons/SaveIcon'
+import { useNavigate } from 'react-router-dom'
+import { Datepicker } from 'flowbite-react'
+import { useEffect } from 'react'
+import Select from 'react-select'
+import { fetchGridDataAsync } from 'src/services/redux/GrideSlice'
+import { getReportDataAsync } from 'src/services/redux/ReportSlice'
+import { useDispatch, useSelector } from 'src/services/redux/utils'
 import { Button as ButtonComp } from 'src/components/buttons'
 import DownloadIcon from '@public/icons/DownloadIcon'
+import {
+  setStartDate,
+  setEndDate,
+  setGridID,
+  clearForm,
+  setReportTitle,
+  setReportTemplate,
+} from 'src/services/redux/ReportSlice'
+import { Spinner } from 'flowbite-react'
 
-interface IndexProps {
-  MockData: any
-  showPDF: boolean
-  setShowPDF: (showPDF: boolean) => void
-}
+const Index = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const gridData = useSelector((state) => state.grid.data)
+  const isLoading = useSelector((state) => state.grid.loading)
+  const darkMode = useSelector((state) => state.darkMode.darkMode)
+  const startDate = useSelector((state) => state.report.startDate)
+  const endDate = useSelector((state) => state.report.endDate)
+  const gridID = useSelector((state) => state.report.gridID)
+  const reportTitle = useSelector((state) => state.report.reportTitle)
+  const reportTemplate = useSelector((state) => state.report.reportTemplate)
+  const loadReportData = useSelector((state) => state.report.isLoading)
 
-const Index: React.FC<IndexProps> = ({ MockData, showPDF, setShowPDF }) => {
-  const [loading, setLoading] = useState(false)
-  const [reportTitle, setReportTitle] = useState('')
-  const [displayPDF, setDisplayPDF] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState('French_Embassy')
-  const [showOptions, setShowOptions] = useState(true)
+  useEffect(() => {
+    dispatch(fetchGridDataAsync())
+  }, [dispatch])
 
-  const generatePDFReport = () => {
-    if (reportTitle.trim() === '') {
-      toast.error('Please provide a report title')
-      return
-    }
-
-    setLoading(true)
-    setDisplayPDF(true)
-    setShowOptions(false)
-    setLoading(false)
-  }
-
-  const getTemplate = () => {
-    switch (selectedTemplate) {
-      case 'AirQo':
-        return <AirQoPdfDocument data={MockData} />
-      case 'French_Embassy':
-        return <FrenchEmPdfDocument data={MockData} />
-      default:
-        return <AirQoPdfDocument data={MockData} />
-    }
-  }
-
-  const returnButton = () => {
-    return (
-      <button
-        className="w-[2.5rem] h-[2.5rem] text-white rounded-lg p-2 hover:bg-gray-300 dark:hover:bg-gray-700"
-        onClick={() => {
-          if (displayPDF) {
-            setDisplayPDF(false)
-            setShowOptions(true)
-          } else {
-            setShowPDF(!showPDF)
-          }
-        }}
-      >
-        <BackArrow width={24} height={24} />
-      </button>
-    )
+  const generateReportData = () => {
+    dispatch(getReportDataAsync()).then((res: any) => {
+      if (res.success) {
+        navigate('/view')
+      }
+    })
   }
 
   return (
-    <>
-      {/* Request user to provide the report title and choose a template */}
-      {showOptions && (
-        <div>
-          {/* return buttons */}
-          {returnButton()}
+    <div>
+      <div className="flex flex-col space-y-4">
+        <div className="block space-y-4">
+          <div className="flex justify-end gap-3">
+            <ButtonComp
+              backgroundColor="#145dff"
+              text="Clear Form"
+              onClick={() => dispatch(clearForm())}
+            />
+          </div>
           <div className="space-y-4">
             <div className="flex flex-col gap-3">
-              <label htmlFor="reportTitle">
-                Report Title {displayPDF && <small>{'(Editable)'}</small>}
+              <label
+                htmlFor="reportTitle"
+                className="text-gray-700 dark:text-gray-200"
+              >
+                Report Title
               </label>
               <input
                 type="text"
                 id="reportTitle"
                 value={reportTitle}
-                onChange={(e) => setReportTitle(e.target.value)}
+                onChange={(e) => dispatch(setReportTitle(e.target.value))}
                 placeholder="Enter report title"
-                className="p-2 border-2 border-dotted border-yellow-500 rounded-lg bg-transparent dark:bg-gray-800 dark:text-white focus:outline-none"
+                className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div className="flex flex-col gap-3">
-              <label htmlFor="template">Choose a template:</label>
+              <label
+                htmlFor="template"
+                className="text-gray-700 dark:text-gray-200"
+              >
+                Choose a template:
+              </label>
               <select
                 id="template"
-                value={selectedTemplate}
-                className="p-2 border-2 border-dotted border-yellow-500 rounded-lg bg-transparent dark:bg-gray-800 dark:text-white"
-                onChange={(e) => setSelectedTemplate(e.target.value)}
+                value={reportTemplate}
+                className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onChange={(e) => dispatch(setReportTemplate(e.target.value))}
               >
                 <option value="AirQo">AirQo</option>
                 <option value="French_Embassy">French Embassy</option>
               </select>
             </div>
+          </div>
+
+          <div className="flex justify-between gap-3 flex-wrap">
+            {/* Date pickers */}
+            <div className="flex flex-wrap items-center gap-2 cursor-pointer">
+              <div className="flex flex-col">
+                <label className="mb-1">Start Date</label>
+                <Datepicker
+                  className="w-64"
+                  placeholder="Select start date ..."
+                  value={
+                    startDate
+                      ? new Date(startDate).toLocaleString('en-US', {
+                          day: 'numeric',
+                          year: 'numeric',
+                          month: 'long',
+                        })
+                      : ''
+                  }
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onSelectedDateChanged={(date) =>
+                    dispatch(setStartDate(date.toISOString().slice(0, 16)))
+                  }
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1">End Date</label>
+                <Datepicker
+                  className="w-64"
+                  placeholder="Select end date ..."
+                  value={
+                    endDate
+                      ? new Date(endDate).toLocaleString('en-US', {
+                          day: 'numeric',
+                          year: 'numeric',
+                          month: 'long',
+                        })
+                      : ''
+                  }
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onSelectedDateChanged={(date) =>
+                    dispatch(setEndDate(date.toISOString().slice(0, 16)))
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Grid select */}
+            <div className="flex flex-col">
+              <label className="mb-1">Location</label>
+              <Select
+                className="basic-single w-64 bg-[#f9fafb] rounded-md border-none focus:outline-none dark:bg-gray-800 dark:text-white"
+                classNamePrefix="select"
+                placeholder="Select location ..."
+                isDisabled={false}
+                isLoading={isLoading}
+                isClearable={true}
+                isSearchable={true}
+                name="Grids"
+                value={
+                  gridID
+                    ? {
+                        value: gridID,
+                        label:
+                          gridData[0]?.grids.find((grid) => grid._id === gridID)
+                            ?.long_name || '',
+                      }
+                    : null
+                }
+                options={gridData[0]?.grids.map((grid) => ({
+                  value: grid._id,
+                  label: grid.long_name,
+                }))}
+                onChange={(selectedOption: any) =>
+                  dispatch(setGridID(selectedOption.value))
+                }
+                styles={{
+                  input: (provided) => ({
+                    ...provided,
+                    fontSize: '0.875rem',
+                    padding: '0.4rem',
+                  }),
+                  control: (base, state) => ({
+                    ...base,
+                    border: state.isFocused ? '0' : '1px solid #d2d6dc',
+                    boxShadow: state.isFocused ? '0 0 0 3px #0060df' : 'none',
+                    borderRadius: '8px',
+                    backgroundColor: darkMode ? '#374151' : 'white',
+                    color: darkMode ? 'white' : 'black',
+                    cursor: 'pointer',
+                  }),
+                  container: (provided) => ({
+                    ...provided,
+                    border: '0',
+                    outline: '0',
+                  }),
+                  singleValue: (provided) => ({
+                    ...provided,
+                    color: darkMode ? 'white' : 'black',
+                  }),
+                  option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isFocused ? '#d6a936' : 'white',
+                    color: state.isFocused ? 'white' : 'black',
+                    cursor: 'pointer',
+                  }),
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="flex h-48 items-center justify-center border-2 border-dotted border-blue-500 rounded-lg">
             <ButtonComp
-              backgroundColor="#800000"
-              text={loading ? 'Generating...' : 'Generate Report'}
-              onClick={generatePDFReport}
+              backgroundColor="#145dff"
+              text={loadReportData ? 'Fetching Data ...' : 'Fetch Report Data'}
+              onClick={generateReportData}
+              disabled={loadReportData}
+              icon={
+                loadReportData ? (
+                  <Spinner
+                    aria-label="Medium sized spinner example"
+                    size="md"
+                  />
+                ) : (
+                  <DownloadIcon width={20} height={20} />
+                )
+              }
             />
           </div>
         </div>
-      )}
-
-      {displayPDF && (
-        <PDFDownloadLink
-          document={getTemplate()}
-          fileName={`${reportTitle} Report.pdf`}
-        >
-          {({ url, loading, error }) => {
-            if (loading) {
-              return (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                  <BarLoader color="#d6a936" />
-                  <p className="mt-2 text-lg text-gray-600">
-                    Generating your report, please wait...
-                  </p>
-                </div>
-              )
-            }
-            if (error) {
-              return (
-                <div className="flex flex-col justify-center items-center mt-8">
-                  <p className="mt-2 text-lg text-red-600">
-                    Error generating report. Please try again
-                  </p>
-                </div>
-              )
-            }
-            return (
-              <div>
-                {returnButton()}
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-semibold capitalize">
-                    {reportTitle}
-                  </h2>
-                  <div className="flex flex-wrap">
-                    <ButtonComp
-                      backgroundColor="#006583"
-                      text="Save"
-                      icon={<SaveIcon width={20} height={20} />}
-                      onClick={() => {}}
-                    />
-                    <ButtonComp
-                      backgroundColor="#800000"
-                      text="Download"
-                      icon={<DownloadIcon width={20} height={20} />}
-                      onClick={() => {
-                        // download the pdf file
-                        const link = document.createElement('a')
-                        link.href = url as string
-                        link.download = `${reportTitle} Report.pdf`
-                        link.click()
-                      }}
-                    />
-                  </div>
-                </div>
-                <iframe
-                  src={url as string}
-                  style={{
-                    width: '100%',
-                    height: '650px',
-                  }}
-                />
-              </div>
-            )
-          }}
-        </PDFDownloadLink>
-      )}
-    </>
+      </div>
+    </div>
   )
 }
 

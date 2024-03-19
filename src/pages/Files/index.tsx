@@ -6,6 +6,7 @@ import { useRef, useState } from 'react'
 import { Button as ButtonComp } from 'src/components/buttons'
 import DownloadIcon from '@public/icons/DownloadIcon'
 import ShareIcon from '@public/icons/ShareIcon'
+import { Alert } from 'flowbite-react'
 
 interface ReportItemProps {
   item: {
@@ -31,21 +32,23 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
 
   return (
     <div
-      key={item.title}
-      className={`flex items-center justify-between border-b border-gray-200 cursor-pointer py-2 px-2 ${
-        index % 2 !== 0 ? 'bg-gray-300' : ''
-      } hover:bg-gray-200 rounded-lg my-2`}
+      key={item.title || index}
+      className="flex flex-wrap items-center justify-between border-b border-gray-200 cursor-pointer py-2 px-2 hover:bg-gray-200 rounded-lg my-2 dark:border-gray-600 dark:hover:bg-gray-500"
     >
       <div className="flex items-center">
         <PdfIcon width={30} height={30} />
         <div className="ml-4">
-          <h3 className="text-lg font-semibold text-gray-700">{item.title}</h3>
-          <p className="text-sm text-gray-500">{formattedDate}</p>
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-white capitalize">
+            {item.title}
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
+            {formattedDate}
+          </p>
         </div>
       </div>
       <div className="flex flex-wrap">
         <ButtonComp
-          backgroundColor="#800000"
+          backgroundColor="#034d38"
           text="Download"
           onClick={() => null}
           icon={<DownloadIcon width={20} height={20} />}
@@ -84,7 +87,7 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
           <Button onClick={() => setOpenModal(false)} color="gray">
             Cancel
           </Button>
-          <Button onClick={handleShare} color="success">
+          <Button onClick={handleShare} color="blue">
             Send
           </Button>
         </Modal.Footer>
@@ -127,14 +130,30 @@ const Index: React.FC = () => {
   ]
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <h2 className="text-2xl font-semibold mb-2">Saved Reports</h2>
-        <div className="mt-4">
-          {items.map((item, index) => (
-            <ReportItem key={item.title} item={item} index={index} />
-          ))}
+    <Layout pageTitle="Saved Reports">
+      {items.length > 0 && (
+        <div className="mb-2">
+          <Alert color="info" className="border-2 border-blue-500 rounded-md">
+            <span className="font-semibold">Important Information:</span>
+            Please note that you have the option to download or share your saved
+            reports. However, for data management purposes, these reports will
+            only be retained in the system for a period of 4 days. After this
+            period, they will be automatically removed from the system. We
+            recommend ensuring that all necessary data is secured before this
+            timeframe.
+          </Alert>
         </div>
+      )}
+      <div className="flex flex-col">
+        {items.length > 0 ? (
+          items.map((item, index) => (
+            <ReportItem key={item.title} item={item} index={index} />
+          ))
+        ) : (
+          <p className="text-lg text-gray-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center dark:text-gray-300">
+            No reports have been saved yet. Start by creating a new report.
+          </p>
+        )}
       </div>
     </Layout>
   )

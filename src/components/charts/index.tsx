@@ -2,6 +2,8 @@
 import { FC, useEffect, useState } from 'react'
 import ChartJsImage from 'chartjs-to-image'
 import { Image } from '@react-pdf/renderer'
+import { store } from '@services/redux/store'
+import { setLoading } from 'src/services/redux/ChartSlice'
 
 interface BarChartProps {
   chartData: any
@@ -24,6 +26,7 @@ export const BarChart: FC<BarChartProps> = ({
 
   useEffect(() => {
     const generateChart = async () => {
+      // store.dispatch(setLoading(true))
       const myChart = new ChartJsImage()
       myChart.setConfig({
         type: 'bar',
@@ -77,6 +80,7 @@ export const BarChart: FC<BarChartProps> = ({
       const url = await myChart.toDataUrl()
       setChartImageUrl(url)
     }
+    store.dispatch(setLoading(false))
 
     generateChart()
   }, [chartData, width, height, graphTitle, xAxisTitle, yAxisTitle])

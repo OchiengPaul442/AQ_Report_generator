@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavLink } from 'react-router-dom'
 import React, { useEffect } from 'react'
-import Logo from '/images/LOGO.jpg'
+import Logo from '/images/airqo.png'
 import { toggleDarkMode } from 'src/services/redux/DarkModeSlice'
 import { useDispatch, useSelector } from 'src/services/redux/utils'
 import Files from '@public/icons/Files'
@@ -51,7 +51,7 @@ const Index: React.FC = () => {
 
   return (
     <div className="h-screen">
-      <div className="w-64 h-full bg-[#810000] text-white shadow-lg flex flex-col justify-between">
+      <div className="w-64 h-full bg-[#145dff] text-white shadow-lg flex flex-col justify-between">
         <div>
           <div className="p-4 flex justify-between items-center">
             <NavLink
@@ -93,7 +93,11 @@ const Index: React.FC = () => {
           </div>
           <hr />
           <div className="space-y-2 p-4">
-            <SidebarItem icon={<Reports />} linkPath="/" LinkText="Reports" />
+            <SidebarItem
+              icon={<Reports />}
+              linkPath="/"
+              LinkText="Report Generator"
+            />
             <SidebarItem
               icon={<Files />}
               linkPath="/files"

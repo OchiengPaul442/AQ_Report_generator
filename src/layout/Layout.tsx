@@ -4,9 +4,10 @@ import Menu from '@public/icons/Menu'
 
 interface LayoutProps {
   children: React.ReactNode
+  pageTitle?: string
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(false)
 
   const toggleSidebar = () => {
@@ -29,8 +30,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <SideBar />
       </div>
       <div className="relative h-full w-full flex-1 bg-gray-100 p-4 text-black dark:text-white dark:bg-gray-800 overflow-y-auto">
-        <div className="w-full flex justify-end p-4 lg:hidden">
-          <button onClick={toggleSidebar}>
+        <div className="w-full flex justify-between py-4">
+          <h1 className="font-bold dark:text-white capitalize text-2xl md:text-3xl">
+            {pageTitle}
+          </h1>
+          <button onClick={toggleSidebar} className="lg:hidden">
             <Menu />
           </button>
         </div>

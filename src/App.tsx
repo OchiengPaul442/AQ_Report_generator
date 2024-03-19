@@ -3,6 +3,8 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from '@services/redux/store'
 import Reports from './pages/Reports'
+import ReportForm from './components/reports'
+import ReportView from './components/reports/ReportView'
 import Files from './pages/Files'
 import Settings from './pages/settings'
 import { Suspense } from 'react'
@@ -23,9 +25,12 @@ const App = () => {
             }
           >
             <Routes>
-              <Route path="/" element={<Reports />} />
-              <Route path="/files" element={<Files />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/*" element={<Reports />}>
+                <Route index element={<ReportForm />} />
+                <Route path="view" element={<ReportView />} />
+              </Route>
+              <Route path="files" element={<Files />} />
+              <Route path="settings" element={<Settings />} />
             </Routes>
             <ToastContainer position="bottom-right" />
           </Suspense>
