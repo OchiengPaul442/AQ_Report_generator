@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PropTypes from 'prop-types'
 import Layout from 'src/layout/Layout'
 import PdfIcon from '@public/icons/PdfIcon'
@@ -7,12 +8,15 @@ import { Button as ButtonComp } from 'src/components/buttons'
 import DownloadIcon from '@public/icons/DownloadIcon'
 import ShareIcon from '@public/icons/ShareIcon'
 import { Alert } from 'flowbite-react'
+import { toast } from 'react-toastify'
+import { setAlert } from 'src/services/redux/DarkModeSlice'
+import { useDispatch } from 'src/services/redux/utils'
 
 interface ReportItemProps {
   item: {
-    title: string
+    fileName: string
+    data: string
     date: string
-    type: string
   }
   index: number
 }
@@ -32,14 +36,14 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
 
   return (
     <div
-      key={item.title || index}
+      key={item.fileName || index}
       className="flex flex-wrap items-center justify-between border-b border-gray-200 cursor-pointer py-2 px-2 hover:bg-gray-200 rounded-lg my-2 dark:border-gray-600 dark:hover:bg-gray-500"
     >
       <div className="flex items-center">
         <PdfIcon width={30} height={30} />
         <div className="ml-4">
           <h3 className="text-lg font-semibold text-gray-700 dark:text-white capitalize">
-            {item.title}
+            {item.fileName}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-300">
             {formattedDate}
@@ -50,7 +54,13 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
         <ButtonComp
           backgroundColor="#034d38"
           text="Download"
-          onClick={() => null}
+          onClick={() => {
+            const link = document.createElement('a')
+            link.href = item.data
+            link.download = `${item.fileName}.pdf`
+            link.click()
+            toast.success('Report downloaded successfully')
+          }}
           icon={<DownloadIcon width={20} height={20} />}
         />
         <ButtonComp
@@ -98,36 +108,73 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
 
 ReportItem.propTypes = {
   item: PropTypes.shape({
-    title: PropTypes.string.isRequired,
+    fileName: PropTypes.string.isRequired,
+    data: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
   }).isRequired,
   index: PropTypes.number.isRequired,
 }
 
 const Index: React.FC = () => {
-  const items = [
-    {
-      title: 'Report 1',
-      date: '2021-09-01',
-      type: 'pdf',
-    },
-    {
-      title: 'Report 2',
-      date: '2021-09-02',
-      type: 'pdf',
-    },
-    {
-      title: 'Report 3',
-      date: '2021-09-03',
-      type: 'pdf',
-    },
-    {
-      title: 'Report 4',
-      date: '2021-09-04',
-      type: 'pdf',
-    },
-  ]
+  const dispatch = useDispatch()
+
+  // Retrieve savedFiles from localStorage
+  const items = JSON.parse(localStorage.getItem('savedFiles') || '[]')
+
+  // Function to check if data should be cleared
+  const checkClearData = () => {
+    const timestamp = localStorage.getItem('timestamp')
+    if (timestamp) {
+      const diff = Date.now() - Number(timestamp)
+      // If it's been 3 days or more, warn the user that the savedFiles will be cleared in 24 hours
+      if (
+        diff >= 3 * 24 * 60 * 60 * 1000 &&
+        diff < 4 * 24 * 60 * 60 * 1000 - 30 * 60 * 1000
+      ) {
+        dispatch(
+          setAlert({
+            message:
+              'Your saved reports will be cleared in 24 hours. Please ensure that all necessary data is secured before this timeframe.',
+            type: 'warning',
+            visibility: true,
+          }),
+        )
+      }
+      // If it's been 4 days minus 30 minutes or more, warn the user that the savedFiles will be cleared in 30 minutes
+      if (
+        diff >= 4 * 24 * 60 * 60 * 1000 - 30 * 60 * 1000 &&
+        diff < 4 * 24 * 60 * 60 * 1000
+      ) {
+        dispatch(
+          setAlert({
+            message:
+              'Your saved reports will be cleared in 30 minutes. Please ensure that all necessary data is secured before this timeframe.',
+            type: 'warning',
+            visibility: true,
+          }),
+        )
+      }
+      // If it's been 4 days or more, clear the savedFiles and hide the alert
+      if (diff >= 4 * 24 * 60 * 60 * 1000) {
+        localStorage.removeItem('savedFiles')
+        localStorage.removeItem('timestamp')
+      }
+
+      // Timeout the alert after 2 minutes
+      setTimeout(() => {
+        dispatch(
+          setAlert({
+            message: '',
+            type: '',
+            visibility: false,
+          }),
+        )
+      }, 2 * 60 * 1000)
+    }
+  }
+
+  // Check every minute
+  setInterval(checkClearData, 60 * 1000)
 
   return (
     <Layout pageTitle="Saved Reports">
@@ -146,12 +193,12 @@ const Index: React.FC = () => {
       )}
       <div className="flex flex-col">
         {items.length > 0 ? (
-          items.map((item, index) => (
-            <ReportItem key={item.title} item={item} index={index} />
+          items.map((item: any, index: number) => (
+            <ReportItem key={item.fileName} item={item} index={index} />
           ))
         ) : (
           <p className="text-lg text-gray-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center dark:text-gray-300">
-            No reports have been saved yet. Start by creating a new report.
+            No reports have been saved yet. Start by generating a new report.
           </p>
         )}
       </div>

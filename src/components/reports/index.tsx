@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from 'react-router-dom'
-import { Datepicker } from 'flowbite-react'
 import { useEffect } from 'react'
 import Select from 'react-select'
 import { fetchGridDataAsync } from 'src/services/redux/GrideSlice'
@@ -17,6 +16,7 @@ import {
   setReportTemplate,
 } from 'src/services/redux/ReportSlice'
 import { Spinner } from 'flowbite-react'
+import { setLoading } from 'src/services/redux/ChartSlice'
 
 const Index = () => {
   const dispatch = useDispatch()
@@ -36,9 +36,11 @@ const Index = () => {
   }, [dispatch])
 
   const generateReportData = () => {
+    dispatch(setLoading(true))
     dispatch(getReportDataAsync()).then((res: any) => {
       if (res.success) {
         navigate('/view')
+        dispatch(setLoading(false))
       }
     })
   }
@@ -95,46 +97,24 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-2 cursor-pointer">
               <div className="flex flex-col">
                 <label className="mb-1">Start Date</label>
-                <Datepicker
-                  className="w-64"
+                <input
+                  type="date"
+                  id="startDate"
                   placeholder="Select start date ..."
-                  value={
-                    startDate
-                      ? new Date(startDate).toLocaleString('en-US', {
-                          day: 'numeric',
-                          year: 'numeric',
-                          month: 'long',
-                        })
-                      : ''
-                  }
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onSelectedDateChanged={(date) =>
-                    dispatch(setStartDate(date.toISOString().slice(0, 16)))
-                  }
+                  value={startDate}
+                  onChange={(e) => dispatch(setStartDate(e.target.value))}
+                  className="p-2 w-64 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 />
               </div>
               <div className="flex flex-col">
                 <label className="mb-1">End Date</label>
-                <Datepicker
-                  className="w-64"
+                <input
+                  type="date"
+                  id="endDate"
                   placeholder="Select end date ..."
-                  value={
-                    endDate
-                      ? new Date(endDate).toLocaleString('en-US', {
-                          day: 'numeric',
-                          year: 'numeric',
-                          month: 'long',
-                        })
-                      : ''
-                  }
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onSelectedDateChanged={(date) =>
-                    dispatch(setEndDate(date.toISOString().slice(0, 16)))
-                  }
+                  value={endDate}
+                  onChange={(e) => dispatch(setEndDate(e.target.value))}
+                  className="p-2 w-64 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 />
               </div>
             </div>
@@ -179,7 +159,7 @@ const Index = () => {
                     border: state.isFocused ? '0' : '1px solid #d2d6dc',
                     boxShadow: state.isFocused ? '0 0 0 3px #0060df' : 'none',
                     borderRadius: '8px',
-                    backgroundColor: darkMode ? '#374151' : 'white',
+                    backgroundColor: darkMode ? '#1f2937' : 'white',
                     color: darkMode ? 'white' : 'black',
                     cursor: 'pointer',
                   }),

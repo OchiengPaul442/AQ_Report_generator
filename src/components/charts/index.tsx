@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useMemo } from 'react'
 import ChartJsImage from 'chartjs-to-image'
 import { Image } from '@react-pdf/renderer'
 import { store } from '@services/redux/store'
@@ -16,7 +16,7 @@ interface BarChartProps {
 
 export const BarChart: FC<BarChartProps> = ({
   chartData,
-  width = 400 * 2,
+  width = 800,
   height = 400,
   graphTitle = '',
   xAxisTitle = '',
@@ -24,54 +24,59 @@ export const BarChart: FC<BarChartProps> = ({
 }) => {
   const [chartImageUrl, setChartImageUrl] = useState('')
 
+  const chartConfig = useMemo(
+    () => ({
+      type: 'bar',
+      data: {
+        ...chartData,
+        datasets: chartData.datasets.map((dataset: any) => ({
+          ...dataset,
+          backgroundColor: 'rgba(0, 0, 255, 0.4)',
+        })),
+      },
+      options: {
+        title: {
+          display: true,
+          text: graphTitle,
+        },
+        scales: {
+          xAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: xAxisTitle,
+              },
+              ticks: {
+                autoSkip: false,
+                maxRotation: 45,
+                minRotation: 45,
+              },
+            },
+          ],
+          yAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: yAxisTitle,
+              },
+            },
+          ],
+        },
+        legend: {
+          display: false,
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    }),
+    [chartData, graphTitle, xAxisTitle, yAxisTitle],
+  )
+
   useEffect(() => {
     const generateChart = async () => {
-      // store.dispatch(setLoading(true))
+      store.dispatch(setLoading(true))
       const myChart = new ChartJsImage()
-      myChart.setConfig({
-        type: 'bar',
-        data: {
-          ...chartData,
-          datasets: chartData.datasets.map((dataset: any) => ({
-            ...dataset,
-            backgroundColor: 'rgba(0, 0, 255, 0.4)',
-          })),
-        },
-        options: {
-          title: {
-            display: true,
-            text: graphTitle,
-          },
-          scales: {
-            xAxes: [
-              {
-                scaleLabel: {
-                  display: true,
-                  labelString: xAxisTitle,
-                },
-                ticks: {
-                  autoSkip: false,
-                  maxRotation: 45,
-                  minRotation: 45,
-                },
-              },
-            ],
-            yAxes: [
-              {
-                scaleLabel: {
-                  display: true,
-                  labelString: yAxisTitle,
-                },
-              },
-            ],
-          },
-          legend: {
-            display: false,
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-        },
-      })
+      myChart.setConfig(chartConfig)
 
       // set chart width and height
       myChart.setWidth(width)
@@ -79,11 +84,11 @@ export const BarChart: FC<BarChartProps> = ({
 
       const url = await myChart.toDataUrl()
       setChartImageUrl(url)
+      store.dispatch(setLoading(false))
     }
-    store.dispatch(setLoading(false))
 
     generateChart()
-  }, [chartData, width, height, graphTitle, xAxisTitle, yAxisTitle])
+  }, [chartConfig, width, height])
 
   return chartImageUrl && <Image src={chartImageUrl} />
 }

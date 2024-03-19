@@ -13,9 +13,9 @@ import reportSlice from './ReportSlice'
 
 const rootReducer = combineReducers({
   grid: gridReducer,
-  darkMode: darkModeReducer,
   chart: chartSlice,
   report: reportSlice,
+  darkMode: darkModeReducer,
 })
 
 const persistConfig = {

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import SideBar from '@components/sidebar'
 import Menu from '@public/icons/Menu'
+import { Alert } from 'flowbite-react'
+import { useSelector } from 'src/services/redux/utils'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -9,6 +11,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(false)
+  const alert = useSelector((state) => state.darkMode?.alert)
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible)
@@ -30,6 +33,11 @@ const Layout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
         <SideBar />
       </div>
       <div className="relative h-full w-full flex-1 bg-gray-100 p-4 text-black dark:text-white dark:bg-gray-800 overflow-y-auto">
+        {alert.visibility && (
+          <Alert color={alert.type} rounded>
+            <span className="font-medium">{alert.message}</span>
+          </Alert>
+        )}
         <div className="w-full flex justify-between py-4">
           <h1 className="font-bold dark:text-white capitalize text-2xl md:text-3xl">
             {pageTitle}

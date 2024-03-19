@@ -1,23 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'src/services/redux/utils'
-import { PDFViewer } from '@react-pdf/renderer'
+import { BlobProvider } from '@react-pdf/renderer'
 // templates
 import AirQoPdfDocument from './templates/AirQo'
 import FrenchEmPdfDocument from './templates/FrenchEm'
-import BackArrow from '@public/icons/BackArrow'
 import { BarLoader } from 'react-spinners'
 import SaveIcon from '@public/icons/SaveIcon'
 import { Button as ButtonComp } from 'src/components/buttons'
 import DownloadIcon from '@public/icons/DownloadIcon'
 import { Breadcrumb, BreadcrumbItem } from 'flowbite-react'
+import { toast } from 'react-toastify'
 
 const ReportView = () => {
   const navigate = useNavigate()
   const reportData = useSelector((state) => state.report.reportData)
   const reportTitle = useSelector((state) => state.report.reportTitle)
   const reportTemplate = useSelector((state) => state.report.reportTemplate)
-  const isLoading = useSelector((state) => state.chart.isLoading)
 
   const getTemplate = () => {
     switch (reportTemplate) {
@@ -30,16 +29,35 @@ const ReportView = () => {
     }
   }
 
-  console.log('isLoading', isLoading)
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
-  //       <BarLoader color="#d6a936" />
-  //       <p className="mt-4 text-center">Preparing the data, please wait...</p>
-  //     </div>
-  //   )
-  // }
+  const handleFileSave = (blob: any, fileName: string) => {
+    const reader = new FileReader()
+    reader.onloadend = function () {
+      // Convert blob to Base64
+      const base64data = reader.result
+      // Retrieve existing files from localStorage
+      const savedFiles = JSON.parse(localStorage.getItem('savedFiles') || '[]')
+      // Check if file with same name already exists
+      const existingFile = savedFiles.find(
+        (file: any) => file.fileName === fileName,
+      )
+      if (existingFile) {
+        toast.error('File with the same name already exists')
+        return
+      }
+      // Add new file to array along with the current date
+      savedFiles.push({
+        fileName,
+        data: base64data,
+        date: new Date().toISOString(),
+      })
+      // Save updated array to localStorage
+      localStorage.setItem('savedFiles', JSON.stringify(savedFiles))
+      // Set a timestamp for when the data was stored
+      localStorage.setItem('timestamp', Date.now().toString())
+      toast.success('File saved successfully')
+    }
+    reader.readAsDataURL(blob)
+  }
 
   return (
     <div className="mt-4 space-y-4">
@@ -58,16 +76,50 @@ const ReportView = () => {
         <h1 className="text-3xl font-bold dark:text-white">{reportTitle}</h1>
       </div>
 
-      {!isLoading && (
-        <PDFViewer
-          style={{
-            width: '100%',
-            height: '650px',
-          }}
-        >
-          {getTemplate()}
-        </PDFViewer>
-      )}
+      {/* show report */}
+      <BlobProvider document={getTemplate()}>
+        {({ url, blob, error }) => {
+          return !url ? (
+            <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
+              <BarLoader color="#006583" />
+              <p className="mt-4 text-center">
+                Generating report, please wait...
+              </p>
+            </div>
+          ) : error ? (
+            <p>An error occurred while generating the report</p>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-end flex-wrap">
+                <ButtonComp
+                  backgroundColor="#006583"
+                  text="Save"
+                  icon={<SaveIcon width={20} height={20} />}
+                  onClick={() => handleFileSave(blob, `${reportTitle}.pdf`)}
+                />
+                <ButtonComp
+                  backgroundColor="#800000"
+                  text="Download"
+                  icon={<DownloadIcon width={20} height={20} />}
+                  onClick={() => {
+                    const link = document.createElement('a')
+                    link.href = url || ''
+                    link.download = `${reportTitle}.pdf`
+                    link.click()
+                  }}
+                />
+              </div>
+
+              <iframe
+                src={url || ''}
+                title="report"
+                width="100%"
+                height="600px"
+              />
+            </div>
+          )
+        }}
+      </BlobProvider>
     </div>
   )
 }
