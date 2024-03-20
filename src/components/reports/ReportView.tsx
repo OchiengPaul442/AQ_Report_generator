@@ -12,22 +12,23 @@ import { Breadcrumb, BreadcrumbItem } from 'flowbite-react'
 import { toast } from 'react-toastify'
 import DocIcon from 'src/assets/icons/DocIcon'
 import PdfIcon from 'src/assets/icons/PdfIcon'
+import MockData from 'src/services/data/data.json'
 // import { saveAs } from 'file-saver'
 
 const ReportView = () => {
   const navigate = useNavigate()
-  const reportData = useSelector((state) => state.report.reportData)
+  // const reportData = useSelector((state) => state.report.reportData)
   const reportTitle = useSelector((state) => state.report.reportTitle)
   const reportTemplate = useSelector((state) => state.report.reportTemplate)
 
   const getTemplate = () => {
     switch (reportTemplate) {
       case 'AirQo':
-        return <AirQoPdfDocument data={reportData} />
+        return <AirQoPdfDocument data={MockData} />
       case 'French_Embassy':
-        return <FrenchEmPdfDocument data={reportData} />
+        return <FrenchEmPdfDocument data={MockData} />
       default:
-        return <AirQoPdfDocument data={reportData} />
+        return <AirQoPdfDocument data={MockData} />
     }
   }
 

@@ -53,8 +53,6 @@ export const getReportDataAsync =
       dispatch(setStartDate(''))
       dispatch(setEndDate(''))
       dispatch(setGridID(''))
-      dispatch(setReportTitle(''))
-      dispatch(setReportTemplate(''))
 
       return {
         success: true,

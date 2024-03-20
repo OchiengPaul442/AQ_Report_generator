@@ -73,26 +73,22 @@ const Header: React.FC = () => {
   )
 }
 
-const chartData = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: [10, 20, 30, 40, 50, 60, 70],
-      borderColor: 'red',
-      backgroundColor: 'rgba(255, 0, 0, 0.2)',
-    },
-    {
-      label: 'Dataset 2',
-      data: [70, 60, 50, 40, 30, 20, 10],
-      borderColor: 'blue',
-      backgroundColor: 'rgba(0, 0, 255, 0.2)',
-    },
-  ],
-}
-
 const Nema: React.FC<NemaProps> = ({ data }) => {
   if (!data) return null
+
+  const chartData1 = {
+    labels: data.airquality.site_monthly_mean_pm.map(
+      (site_name: any) => site_name.site_name,
+    ),
+    datasets: [
+      {
+        label: 'PM2.5 Raw Values',
+        data: data.airquality.site_monthly_mean_pm.map(
+          (item: { pm2_5_raw_value: number }) => item.pm2_5_raw_value,
+        ),
+      },
+    ],
+  }
 
   return (
     <Document
@@ -108,7 +104,7 @@ const Nema: React.FC<NemaProps> = ({ data }) => {
         <View style={styles.section}>
           <View>
             <BarChart
-              chartData={chartData}
+              chartData={chartData1}
               graphTitle="Graph Title"
               xAxisTitle="X Axis Title"
               yAxisTitle="Y Axis Title"
