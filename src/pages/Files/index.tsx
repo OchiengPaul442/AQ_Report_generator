@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PropTypes from 'prop-types'
 import Layout from 'src/layout/Layout'
-import PdfIcon from '@public/icons/PdfIcon'
+import PdfIcon from 'src/assets/icons/PdfIcon'
 import { Button, Label, Modal, TextInput } from 'flowbite-react'
 import { useRef, useState } from 'react'
 import { Button as ButtonComp } from 'src/components/buttons'
-import DownloadIcon from '@public/icons/DownloadIcon'
-import ShareIcon from '@public/icons/ShareIcon'
+import DownloadIcon from 'src/assets/icons/DownloadIcon'
+import ShareIcon from 'src/assets/icons/ShareIcon'
 import { Alert } from 'flowbite-react'
 import { toast } from 'react-toastify'
 import { setAlert } from 'src/services/redux/DarkModeSlice'
@@ -50,7 +50,7 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
           </p>
         </div>
       </div>
-      <div className="flex flex-wrap">
+      <div className="flex gap-2 flex-wrap">
         <ButtonComp
           backgroundColor="#034d38"
           text="Download"

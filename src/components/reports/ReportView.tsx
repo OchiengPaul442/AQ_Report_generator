@@ -6,11 +6,13 @@ import { BlobProvider } from '@react-pdf/renderer'
 import AirQoPdfDocument from './templates/AirQo'
 import FrenchEmPdfDocument from './templates/FrenchEm'
 import { BarLoader } from 'react-spinners'
-import SaveIcon from '@public/icons/SaveIcon'
+import SaveIcon from 'src/assets/icons/SaveIcon'
 import { Button as ButtonComp } from 'src/components/buttons'
-import DownloadIcon from '@public/icons/DownloadIcon'
 import { Breadcrumb, BreadcrumbItem } from 'flowbite-react'
 import { toast } from 'react-toastify'
+import DocIcon from 'src/assets/icons/DocIcon'
+import PdfIcon from 'src/assets/icons/PdfIcon'
+// import { saveAs } from 'file-saver'
 
 const ReportView = () => {
   const navigate = useNavigate()
@@ -79,18 +81,30 @@ const ReportView = () => {
       {/* show report */}
       <BlobProvider document={getTemplate()}>
         {({ url, blob, error }) => {
-          return !url ? (
-            <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
-              <BarLoader color="#006583" />
-              <p className="mt-4 text-center">
-                Generating report, please wait...
+          if (error) {
+            return (
+              <p className="text-red-500">
+                An error occurred while generating the report
               </p>
-            </div>
-          ) : error ? (
-            <p>An error occurred while generating the report</p>
-          ) : (
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-end flex-wrap">
+            )
+          }
+
+          if (!url) {
+            return (
+              <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
+                <BarLoader color="#006583" />
+                <p className="mt-4 text-center">
+                  Generating report, please wait...
+                </p>
+              </div>
+            )
+          }
+
+          const handleSaveAs = () => {}
+
+          return (
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2 justify-end flex-wrap">
                 <ButtonComp
                   backgroundColor="#006583"
                   text="Save"
@@ -98,24 +112,26 @@ const ReportView = () => {
                   onClick={() => handleFileSave(blob, `${reportTitle}.pdf`)}
                 />
                 <ButtonComp
+                  text="Download Doc"
+                  backgroundColor="#145dff"
+                  icon={<DocIcon width={20} height={20} />}
+                  onClick={handleSaveAs}
+                  disabled
+                />
+                <ButtonComp
                   backgroundColor="#800000"
-                  text="Download"
-                  icon={<DownloadIcon width={20} height={20} />}
+                  text="Download PDF"
+                  icon={<PdfIcon width={20} height={20} fill="#fff" />}
                   onClick={() => {
                     const link = document.createElement('a')
-                    link.href = url || ''
+                    link.href = url
                     link.download = `${reportTitle}.pdf`
                     link.click()
                   }}
                 />
               </div>
 
-              <iframe
-                src={url || ''}
-                title="report"
-                width="100%"
-                height="600px"
-              />
+              <iframe src={url} title="report" width="100%" height="600px" />
             </div>
           )
         }}

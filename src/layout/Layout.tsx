@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import SideBar from '@components/sidebar'
-import Menu from '@public/icons/Menu'
+import Menu from 'src/assets/icons/Menu'
 import { Alert } from 'flowbite-react'
 import { useSelector } from 'src/services/redux/utils'
 

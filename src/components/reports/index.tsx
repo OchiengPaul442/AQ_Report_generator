@@ -6,7 +6,7 @@ import { fetchGridDataAsync } from 'src/services/redux/GrideSlice'
 import { getReportDataAsync } from 'src/services/redux/ReportSlice'
 import { useDispatch, useSelector } from 'src/services/redux/utils'
 import { Button as ButtonComp } from 'src/components/buttons'
-import DownloadIcon from '@public/icons/DownloadIcon'
+import DownloadIcon from 'src/assets/icons/DownloadIcon'
 import {
   setStartDate,
   setEndDate,
@@ -15,8 +15,7 @@ import {
   setReportTitle,
   setReportTemplate,
 } from 'src/services/redux/ReportSlice'
-import { Spinner } from 'flowbite-react'
-import { setLoading } from 'src/services/redux/ChartSlice'
+import { PulseLoader } from 'react-spinners'
 
 const Index = () => {
   const dispatch = useDispatch()
@@ -36,11 +35,9 @@ const Index = () => {
   }, [dispatch])
 
   const generateReportData = () => {
-    dispatch(setLoading(true))
     dispatch(getReportDataAsync()).then((res: any) => {
       if (res.success) {
         navigate('/view')
-        dispatch(setLoading(false))
       }
     })
   }
@@ -186,19 +183,19 @@ const Index = () => {
           <div className="flex h-48 items-center justify-center border-2 border-dotted border-blue-500 rounded-lg">
             <ButtonComp
               backgroundColor="#145dff"
-              text={loadReportData ? 'Fetching Data ...' : 'Fetch Report Data'}
-              onClick={generateReportData}
-              disabled={loadReportData}
-              icon={
+              text={
                 loadReportData ? (
-                  <Spinner
-                    aria-label="Medium sized spinner example"
-                    size="md"
-                  />
+                  <div className="flex items-baseline">
+                    Fetching Data
+                    <PulseLoader color="#fff" size={5} className="ml-2" />
+                  </div>
                 ) : (
-                  <DownloadIcon width={20} height={20} />
+                  'Fetch Report Data'
                 )
               }
+              onClick={generateReportData}
+              disabled={loadReportData}
+              icon={<DownloadIcon width={20} height={20} />}
             />
           </div>
         </div>

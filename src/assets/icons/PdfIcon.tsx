@@ -3,9 +3,10 @@ import React from 'react'
 interface PdfIconProps {
   height?: number
   width?: number
+  fill?: string
 }
 
-const PdfIcon: React.FC<PdfIconProps> = ({ height, width }) => {
+const PdfIcon: React.FC<PdfIconProps> = ({ height, width, fill }) => {
   return (
     <svg
       height={height || 200}
@@ -14,11 +15,10 @@ const PdfIcon: React.FC<PdfIconProps> = ({ height, width }) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       xmlSpace="preserve"
-      fill="#000"
+      fill={fill || '#ca1c1c'}
       stroke="#000"
     >
       <g id="SVGRepo_iconCarrier">
-        <style>{'.st0{fill:#ca1c1c}'}</style>
         <path
           className="st0"
           d="M189.031 111.069V6.177L68.398 126.817h104.884c11.336 0 15.749-4.413 15.749-15.748zM252.038 254.612c2.19-1.672 4.397-15.914 8.777-37.329 4.397-21.398-1.104-34.563-12.605-32.899-11.535 1.63-14.26 14.794-13.157 28.519 1.087 13.708 8.208 29.072 12.605 37.856 0 0 2.19 5.492 4.38 3.853zM198.258 365.431c-3.728 1.379-28.503 8.785-43.314 23.036-14.829 14.277-13.742 26.881-7.138 31.27 6.57 4.381 25.226-8.777 36.761-22.484 11.518-13.733 19.192-27.442 19.192-29.631 0-2.191-1.087-3.845-5.501-2.191zM239.45 341.835c10.934-4.38 50.436-13.174 50.436-13.174s-25.762-30.701-29.071-36.745c0 .001-15.363 40.031-21.365 49.919z"
