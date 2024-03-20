@@ -22,8 +22,6 @@ const ReportView = () => {
   const reportTemplate = useSelector((state) => state.report.reportTemplate)
   const isLoading = useSelector((state) => state.chart.isLoading)
 
-  console.log('reportTitle', isLoading)
-
   const getTemplate = () => {
     switch (reportTemplate) {
       case 'AirQo':
