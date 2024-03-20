@@ -20,6 +20,9 @@ const ReportView = () => {
   // const reportData = useSelector((state) => state.report.reportData)
   const reportTitle = useSelector((state) => state.report.reportTitle)
   const reportTemplate = useSelector((state) => state.report.reportTemplate)
+  const isLoading = useSelector((state) => state.chart.isLoading)
+
+  console.log('reportTitle', isLoading)
 
   const getTemplate = () => {
     switch (reportTemplate) {
@@ -90,7 +93,7 @@ const ReportView = () => {
             )
           }
 
-          if (!url) {
+          if (!url && isLoading) {
             return (
               <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
                 <PulseLoader color="#006583" speedMultiplier={1} />
@@ -125,14 +128,19 @@ const ReportView = () => {
                   icon={<PdfIcon width={20} height={20} fill="#fff" />}
                   onClick={() => {
                     const link = document.createElement('a')
-                    link.href = url
+                    link.href = url as string
                     link.download = `${reportTitle}.pdf`
                     link.click()
                   }}
                 />
               </div>
 
-              <iframe src={url} title="report" width="100%" height="600px" />
+              <iframe
+                src={url || ''}
+                title="report"
+                width="100%"
+                height="600px"
+              />
             </div>
           )
         }}
