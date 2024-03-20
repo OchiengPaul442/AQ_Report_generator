@@ -85,6 +85,22 @@ const Header: React.FC = () => {
 const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
   if (!data) return null
 
+  const startDate = new Date(
+    data.airquality.period.startTime,
+  ).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+  const endDate = new Date(data.airquality.period.endTime).toLocaleDateString(
+    'en-US',
+    {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    },
+  )
+
   const chartData1 = {
     labels: data.airquality.site_monthly_mean_pm.map(
       (site_name: any) => site_name.site_name,
@@ -139,20 +155,28 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
       {/* page 1 */}
       <Page size="A4" style={styles.page}>
         <Header />
-        <Text style={styles.title}>Air Quality Report for February 2024</Text>
+        <View>
+          <Text style={styles.title}>
+            Air Quality Report from {startDate} to {endDate} French Embassy,
+            Kampala, Uganda
+          </Text>
+        </View>
+        <Text style={styles.subTitle}>Executive Summary</Text>
         <Text style={styles.text}>
-          This report presents an analysis of the PM2.5 concentrations in
-          various locations for the month of February 2024. PM2.5 refers to
-          particulate matter with a diameter of 2.5 micrometers or smaller,
-          which can pose health risks when present in high concentrations. The
-          data was collected from monitoring stations from AirQo and U.S.
-          Department Of State across the continent, providing insights into air
-          quality and potential health implications. The countries included in
-          the analysis are Ivory Coast, Algeria, South Africa, Ethiopia,
-          Madagascar, Mozambique, Ghana, Rwanda, Cameroon, Kenya, Uganda,
-          Burundi, Burkina Faso, Nigeria, Egypt, and Chad.
+          This report summarises the temporal air quality profiles observed by
+          the AirQo monitor installed at the French Embassy in Kampala between{' '}
+          {startDate} and {endDate}. The AirQo monitor measures particulate
+          matter(PM2.5) concentration, one of the primary air pollutants. PM2.5
+          are fine inhalable particles with diameters generally 2.5 micrometres
+          and smaller. The data from the site indicates that the air quality at
+          this location during the monitored period mainly alternated between
+          moderate and unhealthy. During the end of 2023, the air quality was
+          largely moderate, and in January 2024, the air quality was largely
+          unhealthy.
         </Text>
-        <Text style={styles.subTitle}>Uganda</Text>
+        <Text style={styles.subTitle}>
+          {data.airquality.sites['grid name']}
+        </Text>
         <Text style={styles.text}>
           In February 2024, Uganda experienced a slight rise in average PM2.5
           concentration from 38.85 µg/m³ in January to 39.64 µg/m³ in February
