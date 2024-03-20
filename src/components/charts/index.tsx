@@ -12,6 +12,7 @@ interface BarChartProps {
   graphTitle?: string
   xAxisTitle?: string
   yAxisTitle?: string
+  setChartImageUrl?: any
 }
 
 export const BarChart: FC<BarChartProps> = ({

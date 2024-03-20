@@ -29,9 +29,9 @@ const initialState: ReportState = {
 
 export const getReportDataAsync =
   () => async (dispatch: Dispatch, getState: () => RootState) => {
-    const { startDate, endDate, gridID } = getState().report
+    const { startDate, endDate, gridID, reportTitle } = getState().report
 
-    if (!startDate || !endDate || !gridID) {
+    if (!startDate || !endDate || !gridID || !reportTitle) {
       toast.error('One or more data items are empty.')
       return Promise.reject('One or more data items are empty.')
     }

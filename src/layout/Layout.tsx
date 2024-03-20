@@ -3,6 +3,7 @@ import SideBar from '@components/sidebar'
 import Menu from 'src/assets/icons/Menu'
 import { Alert } from 'flowbite-react'
 import { useSelector } from 'src/services/redux/utils'
+import { ToastContainer } from 'react-toastify'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -48,6 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
         </div>
         {children}
       </div>
+      <ToastContainer position="top-center" />
     </div>
   )
 }

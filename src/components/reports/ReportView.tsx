@@ -13,6 +13,8 @@ import { toast } from 'react-toastify'
 import DocIcon from 'src/assets/icons/DocIcon'
 import PdfIcon from 'src/assets/icons/PdfIcon'
 import MockData from 'src/services/data/data.json'
+import { RefreshIcon } from 'src/assets/icons/RefreshIcon'
+import Reports from 'src/assets/icons/Reports'
 // import { saveAs } from 'file-saver'
 
 const ReportView = () => {
@@ -20,7 +22,6 @@ const ReportView = () => {
   // const reportData = useSelector((state) => state.report.reportData)
   const reportTitle = useSelector((state) => state.report.reportTitle)
   const reportTemplate = useSelector((state) => state.report.reportTemplate)
-  const isLoading = useSelector((state) => state.chart.isLoading)
 
   const getTemplate = () => {
     switch (reportTemplate) {
@@ -70,6 +71,9 @@ const ReportView = () => {
         className="bg-blue-200 rounded-md px-5 py-3 dark:bg-gray-800 dark:text-white dark:bg-blue-800"
       >
         <BreadcrumbItem href="#" onClick={() => navigate('/')}>
+          <div className="mr-2">
+            <Reports width={20} height={20} />
+          </div>
           Report Generator
         </BreadcrumbItem>
         <BreadcrumbItem href="#">Report</BreadcrumbItem>
@@ -85,13 +89,19 @@ const ReportView = () => {
         {({ url, blob, error }) => {
           if (error) {
             return (
-              <p className="text-red-500">
-                An error occurred while generating the report
-              </p>
+              <div className="text-red-500 dark:text-red-400 absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center gap-2">
+                <p>An error occurred while generating the report</p>
+                <ButtonComp
+                  backgroundColor="#006583"
+                  text={null}
+                  onClick={() => navigate('/')}
+                  icon={<RefreshIcon width={20} height={20} />}
+                />
+              </div>
             )
           }
 
-          if (!url && isLoading) {
+          if (!url) {
             return (
               <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
                 <PulseLoader color="#006583" speedMultiplier={1} />
@@ -116,7 +126,7 @@ const ReportView = () => {
                 <ButtonComp
                   text="Download Doc"
                   backgroundColor="#145dff"
-                  icon={<DocIcon width={20} height={20} />}
+                  icon={<DocIcon width={24} height={24} />}
                   onClick={handleSaveAs}
                   disabled
                 />

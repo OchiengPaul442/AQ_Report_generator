@@ -1,16 +1,16 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from '@services/redux/store'
-import Reports from './pages/Reports'
-import ReportForm from './components/reports'
-import ReportView from './components/reports/ReportView'
-import Files from './pages/Files'
-import Settings from './pages/settings'
-import { Suspense } from 'react'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import BounceLoader from 'react-spinners/BounceLoader'
+
+// Use React.lazy for code splitting
+const Reports = lazy(() => import('./pages/Reports'))
+const ReportForm = lazy(() => import('./components/reports'))
+const ReportView = lazy(() => import('./components/reports/ReportView'))
+const Files = lazy(() => import('./pages/Files'))
+const Settings = lazy(() => import('./pages/settings'))
 
 const App = () => {
   return (
@@ -20,7 +20,7 @@ const App = () => {
           <Suspense
             fallback={
               <div className="flex items-center justify-center h-screen">
-                <BounceLoader color="#d6a936" />
+                <BounceLoader color="#006583" />
               </div>
             }
           >
@@ -32,7 +32,6 @@ const App = () => {
               <Route path="files" element={<Files />} />
               <Route path="settings" element={<Settings />} />
             </Routes>
-            <ToastContainer position="bottom-right" />
           </Suspense>
         </Router>
       </PersistGate>

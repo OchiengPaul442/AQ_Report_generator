@@ -27,7 +27,9 @@ export const Button: React.FC<ButtonProps> = ({
       }`}
     >
       {icon && <span>{icon}</span>}
-      <span className={`${icon ? 'hidden md:inline' : ''}`}>{text}</span>
+      {text && (
+        <span className={`${icon ? 'hidden md:inline' : ''}`}>{text}</span>
+      )}
     </button>
   )
 }
