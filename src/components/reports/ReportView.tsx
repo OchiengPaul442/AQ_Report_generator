@@ -5,7 +5,7 @@ import { BlobProvider } from '@react-pdf/renderer'
 // templates
 import AirQoPdfDocument from './templates/AirQo'
 import FrenchEmPdfDocument from './templates/FrenchEm'
-import { BarLoader } from 'react-spinners'
+import { PulseLoader } from 'react-spinners'
 import SaveIcon from 'src/assets/icons/SaveIcon'
 import { Button as ButtonComp } from 'src/components/buttons'
 import { Breadcrumb, BreadcrumbItem } from 'flowbite-react'
@@ -93,7 +93,7 @@ const ReportView = () => {
           if (!url) {
             return (
               <div className="absolute top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center">
-                <BarLoader color="#006583" />
+                <PulseLoader color="#006583" speedMultiplier={1} />
                 <p className="mt-4 text-center">
                   Generating report, please wait...
                 </p>

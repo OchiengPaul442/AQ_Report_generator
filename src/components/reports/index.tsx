@@ -16,6 +16,7 @@ import {
   setReportTemplate,
 } from 'src/services/redux/ReportSlice'
 import { PulseLoader } from 'react-spinners'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 const Index = () => {
   const dispatch = useDispatch()
@@ -40,6 +41,11 @@ const Index = () => {
         navigate('/view')
       }
     })
+  }
+
+  const handleValueChange = (newValue: any) => {
+    dispatch(setStartDate(newValue.startDate))
+    dispatch(setEndDate(newValue.endDate))
   }
 
   return (
@@ -89,29 +95,20 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="flex justify-between gap-3 flex-wrap">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Date pickers */}
-            <div className="flex flex-wrap items-center gap-2 cursor-pointer">
-              <div className="flex flex-col">
-                <label className="mb-1">Start Date</label>
-                <input
-                  type="date"
-                  id="startDate"
-                  placeholder="Select start date ..."
-                  value={startDate}
-                  onChange={(e) => dispatch(setStartDate(e.target.value))}
-                  className="p-2 w-64 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="mb-1">End Date</label>
-                <input
-                  type="date"
-                  id="endDate"
-                  placeholder="Select end date ..."
-                  value={endDate}
-                  onChange={(e) => dispatch(setEndDate(e.target.value))}
-                  className="p-2 w-64 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            <div className="flex items-center gap-2 cursor-pointer w-full">
+              <div className="flex flex-col w-full">
+                <label className="mb-1">Select Date Range (start & end)</label>
+                <Datepicker
+                  useRange={false}
+                  value={{
+                    startDate: startDate,
+                    endDate: endDate,
+                  }}
+                  inputClassName="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  displayFormat="MMM D, YYYY"
+                  onChange={(newValue) => handleValueChange(newValue)}
                 />
               </div>
             </div>
@@ -120,7 +117,7 @@ const Index = () => {
             <div className="flex flex-col">
               <label className="mb-1">Location</label>
               <Select
-                className="basic-single w-64 bg-[#f9fafb] rounded-md border-none focus:outline-none dark:bg-gray-800 dark:text-white"
+                className="w-full relative"
                 classNamePrefix="select"
                 placeholder="Select location ..."
                 isDisabled={false}
