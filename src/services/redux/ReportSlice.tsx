@@ -48,7 +48,6 @@ export const getReportDataAsync =
       const reportData = await getReportData(data)
 
       dispatch(getReportDataSuccess(reportData))
-      toast.success('Report data fetched successfully.')
 
       dispatch(setStartDate(''))
       dispatch(setEndDate(''))

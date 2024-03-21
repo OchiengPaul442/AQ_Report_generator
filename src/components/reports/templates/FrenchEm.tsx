@@ -8,14 +8,14 @@ import {
   StyleSheet,
   Image,
 } from '@react-pdf/renderer'
-import { BarChart } from 'src/components/charts'
-import AirqoLogo from '/images/airqo.png'
-import MakerereLogo from '/images/makerere.png'
+import { BarChart, LineChart } from 'src/components/charts'
+import AirqoLogo from '/images/templateLogo.png'
+import AQI from '/images/AQI.png'
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 3,
     borderBottomWidth: 1,
@@ -76,8 +76,13 @@ interface FrenchEmProps {
 const Header: React.FC = () => {
   return (
     <View style={styles.header} fixed>
-      <Image src={AirqoLogo} style={styles.image} />
-      <Image src={MakerereLogo} style={styles.image} />
+      <Image
+        src={AirqoLogo}
+        style={{
+          width: 'auto',
+          height: 60,
+        }}
+      />
     </View>
   )
 }
@@ -125,7 +130,7 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
     datasets: [
       {
         label: 'Daily Mean PM2.5',
-        data: data.airquality.site_monthly_mean_pm.map(
+        data: data.airquality.daily_mean_pm.map(
           (item: { pm2_5_raw_value: number }) => item.pm2_5_raw_value,
         ),
       },
@@ -157,8 +162,8 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
         <Header />
         <View>
           <Text style={styles.title}>
-            Air Quality Report from {startDate} to {endDate} French Embassy,
-            Kampala, Uganda
+            Air Quality Report from {startDate} to {endDate} for{' '}
+            {data.airquality.sites['grid name']}
           </Text>
         </View>
         <Text style={styles.subTitle}>Executive Summary</Text>
@@ -174,32 +179,71 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
           largely moderate, and in January 2024, the air quality was largely
           unhealthy.
         </Text>
-        <Text style={styles.subTitle}>
-          {data.airquality.sites['grid name']}
+        <Text style={styles.subTitle}>Introduction</Text>
+        <Text style={styles.text}>
+          Air quality is a vital aspect of human health, well-being, and
+          environmental sustainability. Prolonged exposure to air pollution can
+          cause various adverse effects, such as respiratory infections,
+          cardiovascular diseases, lung cancer, and premature death. Other
+          associated effects due to short-term exposure are asthma attacks and
+          chronic bronchitis.
+          {'\n'} {'\n'}
+          Among the various pollutants monitored, one key metric of interest is
+          PM2.5. PM2.5 refers to particulate matter with a diameter of 2.5
+          micrometres or smaller. These microscopic particles, often generated
+          from various sources such as vehicle emissions, industrial processes,
+          rubbish and biomass burning, construction activities, mining
+          activities, dust from unpaved roads, etc, can pose significant health
+          risks when inhaled. Due to their small size, PM2.5 particles can
+          penetrate deep into the lungs, potentially causing respiratory and
+          cardiovascular issues. The sources of PM2.5 pollution in Kampala may
+          include traffic emissions, biomass burning, industrial processes, dust
+          from unpaved roads and construction activities.
         </Text>
         <Text style={styles.text}>
-          In February 2024, Uganda experienced a slight rise in average PM2.5
-          concentration from 38.85 µg/m³ in January to 39.64 µg/m³ in February
-          indicating a decline in air quality. This increase is attributed to
-          the seasonal transition to a dry period, leading to elevated dust and
-          particulate matter. Anticipated slight decrease in PM2.5 levels are
-          expected in March 2024.
+          In steadfast adherence to our unwavering dedication to fostering a
+          healthy and safe environment, AirQo, in partnership with the French
+          Embassy in Kampala, has undertaken a comprehensive examination of the
+          air quality in the vicinity of the French Embassy in Kampala, located
+          on Lumumba Avenue in Nakasero.
+          {'\n'} {'\n'}
+          This report encapsulates the findings from meticulous data analysis
+          from October 2023 to 31st January 2024. The focus of this
+          investigation revolved around the values of PM2.5, a critical
+          parameter in evaluating air quality. It aims to provide an insightful
+          overview of this locale's air quality conditions and neighbourhood.
         </Text>
+        <Text style={styles.subTitle}>Data Presentation</Text>
         <Text style={styles.text}>
-          The highest mean PM2.5 levels were recorded at specific locations,
-          with Nansana west ward in Wakiso district registering the highest at
-          76.02 µg/m³. Monitoring air quality and taking necessary measures to
-          mitigate the impact on public health are crucial in affected regions.
+          Data for this report is presented and visualised using the US-EPA Air
+          Quality Index (AQI) to communicate the health risks associated with
+          PM2.5 exposure. The data visualisation is based on a simplified
+          approach that adopts the raw concentration categorisation with the
+          corresponding AQI colour codes.
         </Text>
-        <Text style={styles.text}>
-          Notably, the locations registering the highest mean PM2.5 values in
-          February were as follows in table 1 and figure 1.
-        </Text>
+        <View>
+          <Image
+            src={AQI}
+            style={{
+              width: 'auto',
+              height: 200,
+              margin: 10,
+            }}
+          />
+          <Text
+            style={{
+              ...styles.figureCaption,
+              marginBottom: 20,
+            }}
+          >
+            Table 1: Air Quality Index (US-EPA)
+          </Text>
+        </View>
         <View>
           <BarChart
             chartData={chartData1}
-            graphTitle="PM2.5 Raw Values for Uganda"
-            xAxisTitle="Location"
+            graphTitle={`Site Monthly Mean PM2.5 for ${data.airquality.sites['grid name']}`}
+            xAxisTitle="Locations"
             yAxisTitle="PM2.5 Raw Values"
           />
           <Text
@@ -209,7 +253,9 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
               marginBottom: 20,
             }}
           >
-            Figure 1: Figure showing the top 5 highest mean PM2.5 in Uganda
+            Figure 1: Figure showing the monthly mean PM2.5 for different sites
+            in
+            {data.airquality.sites['grid name']}
           </Text>
         </View>
         <Text style={styles.text}>
@@ -230,13 +276,13 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
         <View>
           <BarChart
             chartData={chartData2}
-            graphTitle="Diurnal PM2.5 for Uganda"
+            graphTitle={`Daily Mean PM2.5 for ${data.airquality.sites['grid name']}`}
             xAxisTitle="Date"
             yAxisTitle="PM2.5 Raw Values"
           />
           <Text style={styles.figureCaption}>
-            Figure 2: Figure showing the least mean PM2.5 in Uganda with PM2.5
-            less than 20 µg/m³
+            Figure 2: Figure showing the daily mean PM2.5 for{' '}
+            {data.airquality.sites['grid name']}
           </Text>
         </View>
         <Text style={styles.text}>
@@ -253,14 +299,15 @@ const FrenchEm: React.FC<FrenchEmProps> = ({ data }) => {
         </Text>
         <View>
           <Text style={styles.subTitle}>Diurnal</Text>
-          <BarChart
+          <LineChart
             chartData={chartData3}
-            graphTitle="Diurnal PM2.5 for Uganda"
+            graphTitle={`Diurnal PM2.5 for ${data.airquality.sites['grid name']}`}
             xAxisTitle="Hour"
             yAxisTitle="PM2.5 Raw Values"
           />
           <Text style={styles.figureCaption}>
-            Figure 3: Diurnal PM2.5 for Uganda. (The time was in GMT)
+            Figure 3: Diurnal PM2.5 for {data.airquality.sites['grid name']}.
+            (The time was in GMT)
           </Text>
         </View>
         <Text style={styles.text}>

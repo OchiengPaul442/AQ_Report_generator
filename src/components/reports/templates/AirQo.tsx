@@ -9,8 +9,7 @@ import {
   Image,
 } from '@react-pdf/renderer'
 import { BarChart } from 'src/components/charts'
-import AirqoLogo from '/images/airqo.png'
-import MakerereLogo from '/images/makerere.png'
+import AirqoLogo from '/images/templateLogo.png'
 
 const styles = StyleSheet.create({
   page: {
@@ -66,9 +65,14 @@ interface NemaProps {
 
 const Header: React.FC = () => {
   return (
-    <View style={styles.header}>
-      <Image src={AirqoLogo} style={styles.image} />
-      <Image src={MakerereLogo} style={styles.image} />
+    <View style={styles.header} fixed>
+      <Image
+        src={AirqoLogo}
+        style={{
+          width: 'auto',
+          height: 60,
+        }}
+      />
     </View>
   )
 }

@@ -11,6 +11,7 @@ import { Alert } from 'flowbite-react'
 import { toast } from 'react-toastify'
 import { setAlert } from 'src/services/redux/DarkModeSlice'
 import { useDispatch } from 'src/services/redux/utils'
+import { shareReportApi } from '@services/apis/apis'
 
 interface ReportItemProps {
   item: {
@@ -23,15 +24,58 @@ interface ReportItemProps {
 
 const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
   const [openModal, setOpenModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const emailRef = useRef<HTMLInputElement>(null)
+  const systemEmail = 'info@airqo.net'
   const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
 
-  const handleShare = () => {
-    console.log(emailRef.current?.value)
+  const handleShare = async () => {
+    setIsLoading(true)
+    const email = emailRef.current?.value
+
+    // Validate email (assuming toast is an appropriate error notification)
+    if (!email) {
+      toast.error('Please enter an email address')
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      // Generate the PDF (assuming item.data is the base64 string)
+      const pdfData = item.data
+      const buffer = new ArrayBuffer(item.data.length)
+      const view = new Uint8Array(buffer)
+      for (let i = 0; i < pdfData.length; i++) {
+        view[i] = pdfData.charCodeAt(i)
+      }
+      const pdfBlob = new Blob([view], { type: 'application/pdf' })
+
+      // Prepare data for the API (assuming API expects base64 string)
+      const data = {
+        recipientEmails: [email],
+        senderEmail: systemEmail,
+        pdf: pdfBlob,
+      }
+
+      const response = await shareReportApi(data)
+
+      if (response.success) {
+        setOpenModal(false)
+        toast.success('Report shared successfully')
+      } else {
+        throw new Error(response.errors.message)
+      }
+    } catch (error: any) {
+      toast.error(
+        error.message || 'Failed to share the report. Please try again.',
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -68,6 +112,7 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
           text="Share"
           onClick={() => setOpenModal(true)}
           icon={<ShareIcon width={20} height={20} />}
+          disabled={true}
         />
       </div>
 
@@ -94,11 +139,15 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setOpenModal(false)} color="gray">
+          <Button
+            onClick={() => setOpenModal(false)}
+            color="gray"
+            disabled={isLoading}
+          >
             Cancel
           </Button>
-          <Button onClick={handleShare} color="blue">
-            Send
+          <Button onClick={handleShare} color="blue" disabled={isLoading}>
+            {isLoading ? 'Sending...' : 'Send'}
           </Button>
         </Modal.Footer>
       </Modal>
