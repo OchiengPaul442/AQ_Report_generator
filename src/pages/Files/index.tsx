@@ -46,20 +46,22 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
 
     try {
       // Generate the PDF (assuming item.data is the base64 string)
-      const pdfData = item.data
-      const buffer = new ArrayBuffer(item.data.length)
+      const pdfData = atob(item.data.split(',')[1]) // Decode the base64 string
+      const buffer = new ArrayBuffer(pdfData.length)
       const view = new Uint8Array(buffer)
       for (let i = 0; i < pdfData.length; i++) {
         view[i] = pdfData.charCodeAt(i)
       }
       const pdfBlob = new Blob([view], { type: 'application/pdf' })
+      const pdfFile = new File([pdfBlob], item.fileName, {
+        type: 'application/pdf',
+      })
 
-      // Prepare data for the API (assuming API expects base64 string)
-      const data = {
-        recipientEmails: [email],
-        senderEmail: systemEmail,
-        pdf: pdfBlob,
-      }
+      // Prepare data for the API (assuming API expects a File object)
+      const data = new FormData()
+      data.append('recipientEmails', email)
+      data.append('senderEmail', systemEmail)
+      data.append('pdf', pdfFile)
 
       const response = await shareReportApi(data)
 
@@ -112,7 +114,7 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
           text="Share"
           onClick={() => setOpenModal(true)}
           icon={<ShareIcon width={20} height={20} />}
-          disabled={true}
+          // disabled={true}
         />
       </div>
 
