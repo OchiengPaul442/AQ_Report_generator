@@ -12,7 +12,8 @@ import { toast } from 'react-toastify'
 import { setAlert } from 'src/services/redux/DarkModeSlice'
 import { useDispatch } from 'src/services/redux/utils'
 import { shareReportApi } from '@services/apis/apis'
-
+import { Buffer } from 'buffer'
+// import { saveAs } from 'file-saver'
 interface ReportItemProps {
   item: {
     fileName: string
@@ -37,7 +38,7 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
     setIsLoading(true)
     const email = emailRef.current?.value
 
-    // Validate email (assuming toast is an appropriate error notification)
+    // Validate email
     if (!email) {
       toast.error('Please enter an email address')
       setIsLoading(false)
@@ -45,25 +46,22 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
     }
 
     try {
-      // Generate the PDF (assuming item.data is the base64 string)
-      const pdfData = atob(item.data.split(',')[1]) // Decode the base64 string
-      const buffer = new ArrayBuffer(pdfData.length)
-      const view = new Uint8Array(buffer)
-      for (let i = 0; i < pdfData.length; i++) {
-        view[i] = pdfData.charCodeAt(i)
-      }
-      const pdfBlob = new Blob([view], { type: 'application/pdf' })
-      const pdfFile = new File([pdfBlob], item.fileName, {
+      // can i use jsPDF to return a pdf file from the blob for me
+      const pdfFile = new Blob([Buffer.from(item.data, 'base64')], {
         type: 'application/pdf',
       })
 
-      // Prepare data for the API (assuming API expects a File object)
-      const data = new FormData()
-      data.append('recipientEmails', email)
-      data.append('senderEmail', systemEmail)
-      data.append('pdf', pdfFile)
+      // Create a FormData instance
+      const formData = new FormData()
 
-      const response = await shareReportApi(data)
+      // Append the PDF file to the form data
+      formData.append('pdf', pdfFile)
+
+      // Append other data to the form data
+      formData.append('recipientEmails', JSON.stringify([email]))
+      formData.append('senderEmail', systemEmail)
+
+      const response = await shareReportApi(formData)
 
       if (response.success) {
         setOpenModal(false)
@@ -114,7 +112,7 @@ const ReportItem: React.FC<ReportItemProps> = ({ item, index }) => {
           text="Share"
           onClick={() => setOpenModal(true)}
           icon={<ShareIcon width={20} height={20} />}
-          // disabled={true}
+          disabled={true}
         />
       </div>
 
