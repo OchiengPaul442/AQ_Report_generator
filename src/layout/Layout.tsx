@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SideBar from '@components/sidebar'
 import Menu from 'src/assets/icons/Menu'
 import { Alert } from 'flowbite-react'
-import { useSelector } from 'src/services/redux/utils'
+import { useSelector, useDispatch } from 'src/services/redux/utils'
 import { ToastContainer } from 'react-toastify'
+import { toggleDarkMode } from 'src/services/redux/DarkModeSlice'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -11,12 +12,26 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
+  const dispatch = useDispatch()
   const [isSidebarVisible, setSidebarVisible] = useState(false)
   const alert = useSelector((state) => state.darkMode?.alert)
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible)
   }
+
+  const darkMode = useSelector((state) => state.darkMode.darkMode)
+
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode')
+    if (savedDarkMode !== null) {
+      dispatch(toggleDarkMode())
+    }
+  }, [dispatch])
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode.toString())
+  }, [darkMode])
 
   return (
     <div className="flex flex-row h-screen">
@@ -48,8 +63,19 @@ const Layout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
           </button>
         </div>
         {children}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
-      <ToastContainer position="top-center" />
     </div>
   )
 }

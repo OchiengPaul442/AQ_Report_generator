@@ -27,49 +27,6 @@ const initialState: ReportState = {
   error: null,
 }
 
-export const getReportDataAsync =
-  () => async (dispatch: Dispatch, getState: () => RootState) => {
-    const { startDate, endDate, gridID, reportTitle } = getState().report
-
-    if (!startDate || !endDate || !gridID || !reportTitle) {
-      toast.error('One or more data items are empty.')
-      return Promise.reject('One or more data items are empty.')
-    }
-
-    dispatch(getReportDataStart())
-
-    const data = {
-      start_time: startDate,
-      end_time: endDate,
-      grid_id: gridID,
-    }
-
-    try {
-      const reportData = await getReportData(data)
-
-      dispatch(getReportDataSuccess(reportData))
-      toast.success('Report data fetched successfully.')
-
-      dispatch(setStartDate(''))
-      dispatch(setEndDate(''))
-      dispatch(setGridID(''))
-
-      return {
-        success: true,
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch(getReportDataFailure(error.message))
-        toast.error(`Error: ${error.message}`)
-      } else {
-        dispatch(getReportDataFailure('An unknown error occurred.'))
-        toast.error('An unknown error occurred.')
-      }
-
-      throw error
-    }
-  }
-
 const reportSlice = createSlice({
   name: 'report',
   initialState,
@@ -112,6 +69,49 @@ const reportSlice = createSlice({
     },
   },
 })
+
+export const getReportDataAsync =
+  () => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { startDate, endDate, gridID, reportTitle } = getState().report
+
+    if (!startDate || !endDate || !gridID || !reportTitle) {
+      toast.error('One or more data items are empty.')
+      return Promise.reject('One or more data items are empty.')
+    }
+
+    dispatch(getReportDataStart())
+
+    const data = {
+      start_time: startDate,
+      end_time: endDate,
+      grid_id: gridID,
+    }
+
+    try {
+      const reportData = await getReportData(data)
+      dispatch(getReportDataSuccess(reportData))
+
+      // Clear the states here when the response is a success
+      dispatch(setStartDate(''))
+      dispatch(setEndDate(''))
+      dispatch(setGridID(''))
+
+      return {
+        success: true,
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch(getReportDataFailure(error.message))
+        toast.error(`Error: ${error.message}`)
+      } else {
+        dispatch(getReportDataFailure('An unknown error occurred.'))
+        toast.error('An unknown error occurred.')
+      }
+      return {
+        success: false,
+      }
+    }
+  }
 
 export const {
   setStartDate,

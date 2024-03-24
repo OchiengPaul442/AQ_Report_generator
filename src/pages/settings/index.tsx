@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Layout from 'src/layout/Layout'
 import { useDispatch, useSelector } from 'src/services/redux/utils'
 import { toggleDarkMode } from 'src/services/redux/DarkModeSlice'
@@ -6,17 +6,6 @@ import { toggleDarkMode } from 'src/services/redux/DarkModeSlice'
 const Index = () => {
   const dispatch = useDispatch()
   const darkMode = useSelector((state) => state.darkMode.darkMode)
-
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode')
-    if (savedDarkMode !== null) {
-      dispatch(toggleDarkMode())
-    }
-  }, [dispatch])
-
-  useEffect(() => {
-    localStorage.setItem('darkMode', darkMode.toString())
-  }, [darkMode])
 
   const handleToggleDarkMode = () => {
     dispatch(toggleDarkMode())

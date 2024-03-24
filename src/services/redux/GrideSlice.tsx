@@ -16,9 +16,16 @@ const initialState: GridState = {
 
 export const fetchGridDataAsync = createAsyncThunk(
   'grid/fetchGridData',
-  async () => {
-    const response = await getGridsData()
-    return response
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getGridsData()
+      return response
+    } catch (err) {
+      if (err instanceof Error) {
+        return rejectWithValue(err.message)
+      }
+      return rejectWithValue('An unknown error occurred')
+    }
   },
 )
 

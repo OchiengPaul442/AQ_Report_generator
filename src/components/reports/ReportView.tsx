@@ -33,16 +33,22 @@ const ReportView = () => {
     }
   }
 
-  const handleFileSave = (blob: any, fileName: string) => {
+  const handleFileSave = (blob: Blob, fileName: string) => {
     const reader = new FileReader()
     reader.onloadend = function () {
       // Convert blob to Base64
-      const base64data = reader.result
+      const base64data = reader.result as string
+      // Check the size of the base64 string (roughly 3/4 the original blob size)
+      if (base64data.length > 3 * 1024 * 1024) {
+        // Change this to the maximum size you want to allow
+        toast.error('File is too large to save')
+        return
+      }
       // Retrieve existing files from localStorage
       const savedFiles = JSON.parse(localStorage.getItem('savedFiles') || '[]')
       // Check if file with same name already exists
       const existingFile = savedFiles.find(
-        (file: any) => file.fileName === fileName,
+        (file: { fileName: string }) => file.fileName === fileName,
       )
       if (existingFile) {
         toast.error('File with the same name already exists')
@@ -51,7 +57,7 @@ const ReportView = () => {
       // Add new file to array along with the current date
       savedFiles.push({
         fileName,
-        data: base64data,
+        data: base64data, // Store the whole base64 string including MIME type
         date: new Date().toISOString(),
       })
       // Save updated array to localStorage
@@ -59,6 +65,9 @@ const ReportView = () => {
       // Set a timestamp for when the data was stored
       localStorage.setItem('timestamp', Date.now().toString())
       toast.success('File saved successfully')
+    }
+    reader.onerror = function () {
+      toast.error('An error occurred while reading the file')
     }
     reader.readAsDataURL(blob)
   }
@@ -111,7 +120,7 @@ const ReportView = () => {
             )
           }
 
-          const handleSaveAs = () => {}
+          const handleSaveAsDoc = () => {}
 
           return (
             <div className="flex flex-col gap-3">
@@ -120,13 +129,19 @@ const ReportView = () => {
                   backgroundColor="#006583"
                   text="Save"
                   icon={<SaveIcon width={20} height={20} />}
-                  onClick={() => handleFileSave(blob, `${reportTitle}.pdf`)}
+                  onClick={() => {
+                    if (blob !== null) {
+                      handleFileSave(blob, `${reportTitle}.pdf`)
+                    } else {
+                      console.error('Blob is null')
+                    }
+                  }}
                 />
                 <ButtonComp
                   text="Download Doc"
                   backgroundColor="#145dff"
                   icon={<DocIcon width={24} height={24} />}
-                  onClick={handleSaveAs}
+                  onClick={handleSaveAsDoc}
                   disabled
                 />
                 <ButtonComp
